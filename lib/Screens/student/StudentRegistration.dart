@@ -1,3 +1,4 @@
+import 'package:college_app/Screens/student/Success.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
@@ -167,7 +168,12 @@ class _StudentRegisterState extends State<StudentRegister> {
                 child: CustomButton(
                     btnname: "Submit",
                     click: () {
-                      formkey.currentState!.validate();
+                      //formkey.currentState!.validate();
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegSuccess(),
+                          ));
                     }),
               )
             ]),

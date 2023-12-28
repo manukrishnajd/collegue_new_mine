@@ -1,7 +1,7 @@
-import 'package:college_app/Screens/admin/EventScreen.dart';
-import 'package:college_app/Screens/admin/RequestScreen.dart';
 import 'package:college_app/Screens/student/EventScreen.dart';
 import 'package:college_app/Screens/student/PreviousEvent.dart';
+import 'package:college_app/Screens/student/StudentNotification.dart';
+import 'package:college_app/Screens/student/StudentProfile.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:flutter/material.dart';
@@ -25,9 +25,27 @@ class StudentHome extends StatelessWidget {
               color: customBlack),
           centerTitle: true,
           actions: [
-            const Icon(Icons.person_2_outlined),
+            InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        //goto profile......................................
+                        builder: (context) => StudentProfile(),
+                      ));
+                },
+                child: const Icon(Icons.person_2_outlined)),
             SizedBox(width: 10.w),
-            const Icon(Icons.notifications_active_outlined),
+            InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        //goto notification......................................
+                        builder: (context) => StudentNotification(),
+                      ));
+                },
+                child: const Icon(Icons.notifications_active_outlined)),
             SizedBox(
               width: 20.w,
             ),

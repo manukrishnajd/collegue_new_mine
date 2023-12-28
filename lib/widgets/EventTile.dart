@@ -7,8 +7,10 @@ class EventTile extends StatelessWidget {
   const EventTile({
     super.key,
     required this.title,
+     required this.click,
   });
   final String title;
+  final void Function() click;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,6 +22,7 @@ class EventTile extends StatelessWidget {
             size: 14,
             fontWeight: FontWeight.w500,
             color: customWhite),
+        onTap: click,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6).r),
       ),
     );

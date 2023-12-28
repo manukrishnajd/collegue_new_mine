@@ -26,7 +26,7 @@ class DetailsCard extends StatelessWidget {
               size: 14,
               fontWeight: FontWeight.w400,
               color: customBlack),
-          const Text(":"),
+          const Center(child: Text(":")),
           AppText(
               text: department,
               size: 14,
@@ -40,11 +40,11 @@ class DetailsCard extends StatelessWidget {
         ]),
         TableRow(children: [
           const AppText(
-              text: "Request Event :",
+              text: "Request Event",
               size: 14,
               fontWeight: FontWeight.w400,
               color: customBlack),
-          const Text(':'),
+          const Center(child: Text(':')),
           AppText(
               text: event,
               size: 14,
@@ -62,7 +62,7 @@ class DetailsCard extends StatelessWidget {
               size: 14,
               fontWeight: FontWeight.w400,
               color: customBlack),
-          const Text(':'),
+          const Center(child: Text(':')),
           AppText(
               text: date,
               size: 14,
@@ -80,7 +80,7 @@ class DetailsCard extends StatelessWidget {
               size: 14,
               fontWeight: FontWeight.w400,
               color: customBlack),
-          const Text(':'),
+          const Center(child: Text(':')),
           AppText(
               text: time,
               size: 14,
@@ -99,7 +99,7 @@ class DetailsCard extends StatelessWidget {
                 size: 14,
                 fontWeight: FontWeight.w400,
                 color: customBlack),
-            const Text(':'),
+            const Center(child: Text(':')),
             AppText(
                 text: place,
                 size: 14,

@@ -1,3 +1,6 @@
+import 'package:college_app/Screens/student/EventRegistration.dart';
+import 'package:college_app/Screens/student/EventRequest.dart';
+import 'package:college_app/Screens/student/RequestEvent.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/EventTile.dart';
@@ -53,8 +56,15 @@ class EventList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
-        itemBuilder: (context, index) =>
-            const EventTile(title: "food festival"),
+        itemBuilder: (context, index) => EventTile(
+            title: "food festival",
+            click: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EventRegistration(),
+                  ));
+            }),
         itemCount: 3,
       ),
     );
@@ -85,6 +95,13 @@ class RequstList extends StatelessWidget {
                     size: 12,
                     fontWeight: FontWeight.w500,
                     color: customWhite),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RequestEvent(),
+                      ));
+                },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6).r),
               ),
@@ -97,7 +114,13 @@ class RequstList extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(bottom: 10).r,
             child: FloatingActionButton(
-              onPressed: () {}, // Event Add Function...........
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EventRequest(),
+                    ));
+              }, // Event Add Function...........
               shape: const CircleBorder(),
               backgroundColor: maincolor,
               child: const Icon(

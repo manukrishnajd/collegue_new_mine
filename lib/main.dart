@@ -8,8 +8,12 @@ import 'package:college_app/Screens/admin/StudentDetails.dart';
 import 'package:college_app/Screens/admin/TeachersDetails.dart';
 import 'package:college_app/Screens/admin/adminLogin.dart';
 import 'package:college_app/Screens/splashScreen.dart';
+import 'package:college_app/Screens/student/AddPhoto.dart';
+import 'package:college_app/Screens/student/DetailsPhoto.dart';
 import 'package:college_app/Screens/student/EventRegistration.dart';
 import 'package:college_app/Screens/student/EventRequest.dart';
+import 'package:college_app/Screens/student/RequestEvent.dart';
+import 'package:college_app/Screens/student/SignIn.dart';
 import 'package:college_app/Screens/student/StudentHome.dart';
 import 'package:college_app/Screens/student/StudentNotification.dart';
 import 'package:college_app/Screens/student/StudentProfile.dart';
@@ -38,7 +42,7 @@ class MyApp extends StatelessWidget {
             // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             // useMaterial3: true,
           ),
-          home: AdminHome()),
+          home: SignIn()),
       designSize: Size(390, 844),
     );
   }

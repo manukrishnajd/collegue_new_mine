@@ -56,7 +56,7 @@ class StudentDetails extends StatelessWidget {
                 ),
                 Padding(
                     padding:
-                        const EdgeInsets.only(left: 30, right: 30, top: 50).r,
+                        const EdgeInsets.only(left: 50, right: 30, top: 50).r,
                     child: DetailsCard(
                         department: "Bcom",
                         event: "food fest",
