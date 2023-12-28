@@ -3,8 +3,8 @@ import 'package:college_app/widgets/AppText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class PreviousEventTile extends StatelessWidget {
-  const PreviousEventTile({
+class EventCard extends StatelessWidget {
+  const EventCard({
     super.key,
     required this.heading,
     required this.date,

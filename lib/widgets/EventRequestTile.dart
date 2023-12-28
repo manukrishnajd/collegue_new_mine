@@ -8,10 +8,11 @@ class EventRequestTile extends StatelessWidget {
     super.key,
     required this.image,
     required this.requestText,
+    required this.click,
   });
   final String image;
   final String requestText;
-
+  final void Function() click;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -30,6 +31,7 @@ class EventRequestTile extends StatelessWidget {
             color: customWhite,
           ),
           tileColor: maincolor,
+          onTap: click,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(6).r)),
     );

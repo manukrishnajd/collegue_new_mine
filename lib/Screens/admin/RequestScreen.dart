@@ -1,3 +1,5 @@
+import 'package:college_app/Screens/admin/StudentDetails.dart';
+import 'package:college_app/Screens/admin/TeachersDetails.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/EventRequestTile.dart';
 import 'package:college_app/widgets/TeacherTile.dart';
@@ -51,14 +53,16 @@ class TeacherList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context, index) => TeacherTile(
-          image: "assets/teac.png",
-          name: "Teacher Name",
-          department: "department",
-          cancel: () {}, // Cancel button function....
-          accept: () {}), // accept button function....
-      itemCount: 5,
+    return Scaffold(
+      body: ListView.builder(
+        itemBuilder: (context, index) => TeacherTile(
+            image: "assets/teac.png",
+            name: "Teacher Name",
+            department: "department",
+            cancel: () {}, // Cancel button function....
+            accept: () {}), // accept button function....
+        itemCount: 4,
+      ),
     );
   }
 }
@@ -117,11 +121,21 @@ class StudentRequestList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context, index) => const EventRequestTile(
-          image: "assets/teac.png",
-          requestText: "Adhil requests Food Festival"),
-      itemCount: 5,
+    return Scaffold(
+      body: ListView.builder(
+        itemBuilder: (context, index) => EventRequestTile(
+            image: "assets/teac.png",
+            requestText: "Adhil requests Food Festival",
+            click: () {
+              // goto Student RequstScreen.................
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const StudentDetails(),
+                  ));
+            }),
+        itemCount: 2,
+      ),
     );
   }
 }
@@ -132,11 +146,21 @@ class TeacherRequestList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context, index) => const EventRequestTile(
-          image: "assets/teac.png",
-          requestText: "Anandu requests Food Festival"),
-      itemCount: 2,
+    return Scaffold(
+      body: ListView.builder(
+        itemBuilder: (context, index) => EventRequestTile(
+            image: "assets/teac.png",
+            requestText: "Anandu requests Food Festival",
+            click: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    // goto Student RequstScreen.................
+                    builder: (context) => const TeacherDetails(),
+                  ));
+            }),
+        itemCount: 3,
+      ),
     );
   }
 }

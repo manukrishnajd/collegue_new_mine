@@ -1,13 +1,14 @@
 import 'package:college_app/Screens/admin/EventScreen.dart';
-import 'package:college_app/Screens/admin/Notification.dart';
 import 'package:college_app/Screens/admin/RequestScreen.dart';
+import 'package:college_app/Screens/student/EventScreen.dart';
+import 'package:college_app/Screens/student/PreviousEvent.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AdminHome extends StatelessWidget {
-  const AdminHome({super.key});
+class StudentHome extends StatelessWidget {
+  const StudentHome({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,37 +16,34 @@ class AdminHome extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: customWhite,
           automaticallyImplyLeading: false,
           title: AppText(
-              text: "Request",
+              text: "Event",
               size: 18.sp,
               fontWeight: FontWeight.w500,
               color: customBlack),
           centerTitle: true,
           actions: [
-            InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NotificationScreen(),
-                      ));
-                },
-                child: const Icon(Icons.notifications_active_outlined)),
+            const Icon(Icons.person_2_outlined),
+            SizedBox(width: 10.w),
+            const Icon(Icons.notifications_active_outlined),
             SizedBox(
               width: 20.w,
-            )
+            ),
           ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(20).r,
           child: Column(children: [
             const Expanded(
-                child: TabBarView(children: [RequestScreen(), EventScreen()])),
+                child:
+                    TabBarView(children: [SRequestScreen(), PreviousEvent()])),
             Container(
               // Tab bar.......................
               height: 55.h,
               decoration: BoxDecoration(
+                  color: customWhite,
                   border: Border.all(color: maincolor),
                   borderRadius: BorderRadius.circular(50).r),
               child: Padding(
@@ -55,10 +53,10 @@ class AdminHome extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50), // Creates border
                       color: maincolor), //Change background color from here
                   tabs: [
-                    Text("Request",
+                    Text("Upcoming",
                         style: TextStyle(
                             fontSize: 14.sp, fontWeight: FontWeight.w600)),
-                    Text("Event",
+                    Text("Previous",
                         style: TextStyle(
                             fontSize: 14.sp, fontWeight: FontWeight.w600))
                   ],

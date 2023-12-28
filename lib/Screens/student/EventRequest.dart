@@ -4,13 +4,13 @@ import 'package:college_app/widgets/CustomButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AddEvent extends StatelessWidget {
-  AddEvent({super.key});
+class EventRequest extends StatelessWidget {
+  EventRequest({super.key});
 
   final eventname = TextEditingController();
-  final date = TextEditingController();
-  final time = TextEditingController();
-  final place = TextEditingController();
+  final name = TextEditingController();
+  final department = TextEditingController();
+  final phone = TextEditingController();
   final description = TextEditingController();
 
   @override
@@ -30,7 +30,7 @@ class AddEvent extends StatelessWidget {
           ),
         ),
         title: AppText(
-            text: "Add Event",
+            text: "Event Request",
             size: 18.sp,
             fontWeight: FontWeight.w500,
             color: customBlack),
@@ -46,7 +46,7 @@ class AddEvent extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const AppText(
-                        text: "Event Name",
+                        text: "Request Event",
                         size: 14,
                         fontWeight: FontWeight.w400,
                         color: customBlack),
@@ -56,7 +56,7 @@ class AddEvent extends StatelessWidget {
                         controller: eventname, // controller........
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.h, horizontal: 15.w),
+                                vertical: 10.h, horizontal: 15.w),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6).r),
                             focusedBorder: OutlineInputBorder(
@@ -66,17 +66,17 @@ class AddEvent extends StatelessWidget {
                       ),
                     ),
                     const AppText(
-                        text: "Date",
+                        text: "Name",
                         size: 14,
                         fontWeight: FontWeight.w400,
                         color: customBlack),
                     Padding(
                       padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                       child: TextFormField(
-                        controller: date, // controller........
+                        controller: name, // controller........
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.h, horizontal: 15.w),
+                                vertical: 10.h, horizontal: 15.w),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6).r),
                             focusedBorder: OutlineInputBorder(
@@ -86,17 +86,17 @@ class AddEvent extends StatelessWidget {
                       ),
                     ),
                     const AppText(
-                        text: "Time",
+                        text: "Department",
                         size: 14,
                         fontWeight: FontWeight.w400,
                         color: customBlack),
                     Padding(
                       padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                       child: TextFormField(
-                        controller: time, // controller........
+                        controller: department, // controller........
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.h, horizontal: 15.w),
+                                vertical: 10.h, horizontal: 15.w),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6).r),
                             focusedBorder: OutlineInputBorder(
@@ -106,17 +106,17 @@ class AddEvent extends StatelessWidget {
                       ),
                     ),
                     const AppText(
-                        text: "Location",
+                        text: "Phone No",
                         size: 14,
                         fontWeight: FontWeight.w400,
                         color: customBlack),
                     Padding(
                       padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                       child: TextFormField(
-                        controller: place, // controller........
+                        controller: phone, // controller........
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
-                                vertical: 15.h, horizontal: 15.w),
+                                vertical: 10.h, horizontal: 15.w),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6).r),
                             focusedBorder: OutlineInputBorder(
@@ -136,6 +136,8 @@ class AddEvent extends StatelessWidget {
                         controller: description, // controller........
                         maxLines: 4,
                         decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 10.h, horizontal: 15.w),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6).r),
                             focusedBorder: OutlineInputBorder(
@@ -147,7 +149,7 @@ class AddEvent extends StatelessWidget {
                   ],
                 ),
                 SizedBox(
-                  height: 40.h,
+                  height: 80.h,
                 ),
                 CustomButton(btnname: "Submit", click: () {})
               ]),

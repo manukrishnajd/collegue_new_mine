@@ -1,3 +1,4 @@
+import 'package:college_app/Screens/admin/AddNotification.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/NotificationCard.dart';
@@ -5,9 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NotificationScreen extends StatelessWidget {
-  NotificationScreen({super.key});
-  final eventname = TextEditingController();
-  final description = TextEditingController();
+  const NotificationScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,12 +42,19 @@ class NotificationScreen extends StatelessWidget {
                       "We are delighted to announce the upcoming Onam Program, a celebration of joy, culture, and togetherness! The college principal has approved the event, and we can't wait to make it a memorable occasion for all. ",
                   delete: () {}, //delete icon  function.................
                 ),
-                itemCount: 3,
+                itemCount: 2,
               ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: FloatingActionButton(
-                  onPressed: () {}, // Notification Add Function...........
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        DialogRoute(
+                          context: context,
+                          builder: (context) => AddNotification(),
+                        ));
+                  }, // Notification Add Function...........
                   shape: const CircleBorder(),
                   backgroundColor: maincolor,
                   child: const Icon(

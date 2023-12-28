@@ -34,58 +34,64 @@ class AddNotification extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(25).r,
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText(
-                      text: "Event Name",
-                      size: 15.sp,
-                      fontWeight: FontWeight.w400,
-                      color: customBlack),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  TextFormField(
-                    controller: eventname, // controller........
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6).r),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6).r,
-                            borderSide: const BorderSide(color: maincolor))),
-                  ),
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                  AppText(
-                      text: "Description",
-                      size: 15.sp,
-                      fontWeight: FontWeight.w400,
-                      color: customBlack),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  TextFormField(
-                    controller: description, // controller........
-                    maxLines: 5,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6).r),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6).r,
-                            borderSide: const BorderSide(color: maincolor))),
-                  ),
-                ],
-              ),
-              CustomButton(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText(
+                        text: "Event Name",
+                        size: 15.sp,
+                        fontWeight: FontWeight.w400,
+                        color: customBlack),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    TextFormField(
+                      controller: eventname, // controller........
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 15.h, horizontal: 15.h),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6).r),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6).r,
+                              borderSide: const BorderSide(color: maincolor))),
+                    ),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    AppText(
+                        text: "Description",
+                        size: 15.sp,
+                        fontWeight: FontWeight.w400,
+                        color: customBlack),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    TextFormField(
+                      controller: description, // controller........
+                      maxLines: 5,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6).r),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6).r,
+                              borderSide: const BorderSide(color: maincolor))),
+                    ),
+                  ]),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: CustomButton(
                   btnname: "Send",
                   click: () {
                     // //send function.........
-                  })
-            ]),
+                  }),
+            )
+          ],
+        ),
       ),
     );
   }
