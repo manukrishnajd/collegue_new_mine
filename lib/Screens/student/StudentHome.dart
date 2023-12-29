@@ -46,9 +46,6 @@ class StudentHome extends StatelessWidget {
                       ));
                 },
                 child: const Icon(Icons.notifications_active_outlined)),
-            SizedBox(
-              width: 20.w,
-            ),
           ],
         ),
         body: Padding(
@@ -59,7 +56,7 @@ class StudentHome extends StatelessWidget {
                     TabBarView(children: [SRequestScreen(), PreviousEvent()])),
             Container(
               // Tab bar.......................
-              height: 55.h,
+              height: 60.h,
               decoration: BoxDecoration(
                   color: customWhite,
                   border: Border.all(color: maincolor),

@@ -19,6 +19,16 @@ import 'package:college_app/Screens/student/StudentNotification.dart';
 import 'package:college_app/Screens/student/StudentProfile.dart';
 import 'package:college_app/Screens/student/StudentRegistration.dart';
 import 'package:college_app/Screens/student/Success.dart';
+import 'package:college_app/Screens/teacher/TAddEvent.dart';
+import 'package:college_app/Screens/teacher/TEvent.dart';
+import 'package:college_app/Screens/teacher/TEventDetails.dart';
+import 'package:college_app/Screens/teacher/TEventPhoto.dart';
+import 'package:college_app/Screens/teacher/THome.dart';
+import 'package:college_app/Screens/teacher/TNotification.dart';
+import 'package:college_app/Screens/teacher/TProfile.dart';
+import 'package:college_app/Screens/teacher/TRegistration.dart';
+import 'package:college_app/Screens/teacher/TSignIn.dart';
+import 'package:college_app/Screens/teacher/TStudentDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -42,7 +52,7 @@ class MyApp extends StatelessWidget {
             // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             // useMaterial3: true,
           ),
-          home: SignIn()),
+          home: TEventDetails()),
       designSize: Size(390, 844),
     );
   }

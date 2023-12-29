@@ -3,6 +3,7 @@ import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RegSuccess extends StatelessWidget {
   const RegSuccess({super.key});
@@ -12,12 +13,13 @@ class RegSuccess extends StatelessWidget {
     return Scaffold(
       body: Padding(
         padding:
-            const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 250),
+            const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 250).r,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.check_circle,

@@ -10,22 +10,29 @@ class EventCard extends StatelessWidget {
     required this.date,
     required this.time,
     required this.location,
+    this.mode = false,
+    this.host = "",
   });
   final String heading;
   final String date;
   final String time;
   final String location;
+  final String host;
+  final bool mode; // if mode is true host is visible in the event card.....
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 10).r,
-      child: Container(
-        height: 130.h,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(6).r,
-            color: Colors.blue.shade50),
+      child: Card(
+        color: Colors.blue.shade50,
+        elevation: 1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6).r,
+        ),
         child: Padding(
-            padding: const EdgeInsets.all(10).r,
+            padding:
+                const EdgeInsets.only(left: 20, right: 10, top: 10, bottom: 10)
+                    .r,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -35,26 +42,45 @@ class EventCard extends StatelessWidget {
                     size: 14,
                     fontWeight: FontWeight.w500,
                     color: maincolor),
+                SizedBox(
+                  height: 4.h,
+                ),
                 Row(
                   children: [
-                    const Column(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppText(
+                        const AppText(
                             text: "Date",
                             size: 12,
                             fontWeight: FontWeight.w400,
                             color: customBlack),
-                        AppText(
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        const AppText(
                             text: "Time",
                             size: 12,
                             fontWeight: FontWeight.w400,
                             color: customBlack),
-                        AppText(
-                            text: "location",
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        const AppText(
+                            text: "Location",
                             size: 12,
                             fontWeight: FontWeight.w400,
                             color: customBlack),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        mode == true
+                            ? const AppText(
+                                text: "Host",
+                                size: 12,
+                                fontWeight: FontWeight.w400,
+                                color: customBlack)
+                            : SizedBox(),
                       ],
                     ),
                     Flexible(
@@ -62,20 +88,36 @@ class EventCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AppText2(
-                              text: ":${date}",
+                              text: " : ${date}",
                               size: 12,
                               fontWeight: FontWeight.w400,
                               color: customBlack),
+                          SizedBox(
+                            height: 2.h,
+                          ),
                           AppText2(
-                              text: ":${time}",
+                              text: " : ${time}",
                               size: 12,
                               fontWeight: FontWeight.w400,
                               color: customBlack),
+                          SizedBox(
+                            height: 2.h,
+                          ),
                           AppText2(
-                              text: ":${location}",
+                              text: " : ${location}",
                               size: 12,
                               fontWeight: FontWeight.w400,
                               color: customBlack),
+                          SizedBox(
+                            height: 2.h,
+                          ),
+                          mode == true
+                              ? AppText2(
+                                  text: " : ${host}",
+                                  size: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: customBlack)
+                              : SizedBox(),
                         ],
                       ),
                     )

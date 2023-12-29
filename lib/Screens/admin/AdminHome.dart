@@ -32,9 +32,6 @@ class AdminHome extends StatelessWidget {
                       ));
                 },
                 child: const Icon(Icons.notifications_active_outlined)),
-            SizedBox(
-              width: 20.w,
-            )
           ],
         ),
         body: Padding(
@@ -44,7 +41,7 @@ class AdminHome extends StatelessWidget {
                 child: TabBarView(children: [RequestScreen(), EventScreen()])),
             Container(
               // Tab bar.......................
-              height: 55.h,
+              height: 60.h,
               decoration: BoxDecoration(
                   border: Border.all(color: maincolor),
                   borderRadius: BorderRadius.circular(50).r),
