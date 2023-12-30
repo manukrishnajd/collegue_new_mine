@@ -1,6 +1,7 @@
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
+import 'package:college_app/widgets/DetailsCard2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -55,7 +56,7 @@ class TStudentDetails extends StatelessWidget {
                     padding: const EdgeInsets.only(
                             left: 50, right: 30, top: 40, bottom: 80)
                         .r,
-                    child: const EventDet(
+                    child: const StudDet(
                         regno: "regno",
                         dipartment: "dipartment",
                         phone: "phone",
@@ -78,100 +79,6 @@ class TStudentDetails extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-// Student Details model.............................................
-class EventDet extends StatelessWidget {
-  const EventDet({
-    super.key,
-    required this.regno,
-    required this.dipartment,
-    required this.phone,
-    required this.email,
-  });
-  final String regno;
-  final String dipartment;
-  final String phone;
-  final String email;
-  @override
-  Widget build(BuildContext context) {
-    return Table(
-      children: [
-        TableRow(children: [
-          const AppText(
-              text: "Register No",
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack),
-          const Center(child: Text(":")),
-          AppText(
-              text: regno,
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack)
-        ]),
-        const TableRow(children: [
-          SizedBox(height: 20), //SizeBox Widget
-          SizedBox(height: 20),
-          SizedBox(height: 20),
-        ]),
-        TableRow(children: [
-          const AppText(
-              text: "Department",
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack),
-          const Center(child: Text(':')),
-          AppText(
-              text: dipartment,
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack)
-        ]),
-        const TableRow(children: [
-          SizedBox(height: 20), //SizeBox Widget
-          SizedBox(height: 20),
-          SizedBox(height: 20),
-        ]),
-        TableRow(children: [
-          const AppText(
-              text: "Phone No",
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack),
-          const Center(child: Text(':')),
-          AppText(
-              text: phone,
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack)
-        ]),
-        const TableRow(children: [
-          SizedBox(height: 20), //SizeBox Widget
-          SizedBox(height: 20),
-          SizedBox(height: 20),
-        ]),
-        TableRow(children: [
-          const AppText(
-              text: "Email",
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack),
-          const Center(child: Text(':')),
-          AppText(
-              text: email,
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack)
-        ]),
-      ],
-      columnWidths: const {
-        0: FlexColumnWidth(4),
-        1: FlexColumnWidth(1),
-        2: FlexColumnWidth(5),
-      },
     );
   }
 }

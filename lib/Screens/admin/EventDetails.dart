@@ -88,11 +88,13 @@ class _EventDetailsState extends State<EventDetails> {
             SizedBox(
               height: 10.h,
             ),
-            const StudentTile(
-                // StudentDetails Custom Tile...................
-                img: "assets/teac.png",
-                name: "Name",
-                department: "department"),
+            StudentTile(
+              // StudentDetails Custom Tile...................
+              img: "assets/teac.png",
+              name: "Name",
+              department: "department",
+              click: () {},
+            ),
             SizedBox(
               height: 20.h,
             ),

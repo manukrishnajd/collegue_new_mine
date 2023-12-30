@@ -46,6 +46,7 @@ class StudentHome extends StatelessWidget {
                       ));
                 },
                 child: const Icon(Icons.notifications_active_outlined)),
+                 SizedBox(width: 20.w),
           ],
         ),
         body: Padding(

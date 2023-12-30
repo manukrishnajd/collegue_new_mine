@@ -1,4 +1,4 @@
-import 'package:college_app/Screens/student/SignIn.dart';
+import 'package:college_app/Screens/student/StudentHome.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
@@ -44,7 +44,7 @@ class RegSuccess extends StatelessWidget {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SignIn(),
+                          builder: (context) => StudentHome(),
                         ));
                   })
             ]),

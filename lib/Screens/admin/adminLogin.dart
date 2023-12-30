@@ -1,3 +1,4 @@
+import 'package:college_app/Screens/admin/AdminHome.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
@@ -51,6 +52,11 @@ class AdminLogin extends StatelessWidget {
                       btnname: "Login",
                       click: () {
                         // Login Function..................
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AdminHome(),
+                            ));
                       },
                     )
                   ],

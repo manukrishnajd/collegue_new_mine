@@ -81,8 +81,7 @@ class PrevDetails extends StatelessWidget {
             time: "time",
             location: "location",
             host: "ameen",
-            mode:
-                true, //if mode is true host is visible in the event card............
+            mode:true, //if mode is true host is visible in the event card............
           ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.h),
@@ -95,10 +94,11 @@ class PrevDetails extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               //participend list.............................
-              itemBuilder: (context, index) => const StudentTile(
+              itemBuilder: (context, index) =>  StudentTile(
                   img: "assets/teac.png",
                   name: "Name",
-                  department: "department"),
+                  department: "department",
+                   click: () {},),
               itemCount: 3,
             ),
           )

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TRegistration extends StatefulWidget {
-  TRegistration({super.key});
+  const TRegistration({super.key});
 
   @override
   State<TRegistration> createState() => _TRegistrationState();
@@ -13,17 +13,11 @@ class TRegistration extends StatefulWidget {
 
 class _TRegistrationState extends State<TRegistration> {
   final name = TextEditingController();
-
   final departmnet = TextEditingController();
-
   final registerno = TextEditingController();
-
   final phone = TextEditingController();
-
   final email = TextEditingController();
-
   final password = TextEditingController();
-
   final formkey = GlobalKey<FormState>();
 
   @override
@@ -55,7 +49,14 @@ class _TRegistrationState extends State<TRegistration> {
               Padding(
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
-                  controller: name, // controller........
+                  controller: name,
+                  validator: (value) {
+                    if (value != null || value == null) {
+                      // validator.....
+                      return "Enter your name";
+                    }
+                    return null;
+                  }, // controller........
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -75,6 +76,13 @@ class _TRegistrationState extends State<TRegistration> {
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
                   controller: departmnet, // controller........
+                  validator: (value) {
+                    if (value != null || value == null) {
+                      // validator.....
+                      return "Enter your department";
+                    }
+                    return null;
+                  }, // controller........
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -94,6 +102,12 @@ class _TRegistrationState extends State<TRegistration> {
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
                   controller: phone, // controller........
+                  validator: (value) {
+                    if (value?.length != 10) {
+                      // validation............
+                      return 'Please enter mobile number'; // validator.........
+                    }
+                  },
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -114,7 +128,12 @@ class _TRegistrationState extends State<TRegistration> {
                 child: TextFormField(
                   controller: email, // controller........
                   validator: (value) {
-                    if (value!.isEmpty || value == null) return "email";
+                    // validator.........
+                    if (value!.isEmpty ||
+                        !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(value)) {
+                      return 'Enter a valid email!';
+                    }
                   },
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
@@ -136,8 +155,10 @@ class _TRegistrationState extends State<TRegistration> {
                 child: TextFormField(
                   controller: password,
                   obscureText: true, // controller........
-                  validator: (value) {
-                    if (value!.isEmpty || value == null) return "email";
+                 validator: (value) {
+                    if (value?.length != 6) {
+                      return "Enter  atleast 6 character";
+                    }
                   },
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
@@ -154,7 +175,7 @@ class _TRegistrationState extends State<TRegistration> {
                 child: CustomButton(
                     btnname: "Submit",
                     click: () {
-                      //formkey.currentState!.validate();
+                      formkey.currentState!.validate();
                       // Navigator.pushReplacement(
                       //     context,
                       //     MaterialPageRoute(

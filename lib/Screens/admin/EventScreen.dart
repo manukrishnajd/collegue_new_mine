@@ -1,4 +1,5 @@
 import 'package:college_app/Screens/admin/Addevent.dart';
+import 'package:college_app/Screens/admin/EventDetails.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/EventCard.dart';
 import 'package:college_app/widgets/EventUpcomingTile.dart';
@@ -59,6 +60,13 @@ class EventUpcomingList extends StatelessWidget {
           ListView.builder(
             itemBuilder: (context, index) => EventUpcomingTila(
                 title: "food festival",
+                click: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EventDetails(),
+                      ));
+                },
                 delete: () {
                   // delete Function.............
                 }),

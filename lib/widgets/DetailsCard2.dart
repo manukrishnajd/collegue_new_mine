@@ -1,112 +1,91 @@
+// Student Details model.............................................
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:flutter/material.dart';
 
-class DetailsCard extends StatelessWidget {
-  const DetailsCard({
+class StudDet extends StatelessWidget {
+  const StudDet({
     super.key,
-    required this.department,
-    required this.event,
-    required this.date,
-    required this.time,
-    required this.place,
+    required this.regno,
+    required this.dipartment,
+    required this.phone,
+    required this.email,
   });
-  final String department;
-  final String event;
-  final String date;
-  final String time;
-  final String place;
+  final String regno;
+  final String dipartment;
+  final String phone;
+  final String email;
   @override
   Widget build(BuildContext context) {
     return Table(
       children: [
         TableRow(children: [
           const AppText(
-              text: "Department",
+              text: "Register No",
               size: 14,
               fontWeight: FontWeight.w400,
               color: customBlack),
           const Center(child: Text(":")),
           AppText(
-              text: department,
+              text: regno,
               size: 14,
               fontWeight: FontWeight.w400,
               color: customBlack)
         ]),
         const TableRow(children: [
-          SizedBox(height: 15), //SizeBox Widget
-          SizedBox(height: 15),
-          SizedBox(height: 15),
+          SizedBox(height: 20), //SizeBox Widget
+          SizedBox(height: 20),
+          SizedBox(height: 20),
         ]),
         TableRow(children: [
           const AppText(
-              text: "Request Event",
+              text: "Department",
               size: 14,
               fontWeight: FontWeight.w400,
               color: customBlack),
           const Center(child: Text(':')),
           AppText(
-              text: event,
+              text: dipartment,
               size: 14,
               fontWeight: FontWeight.w400,
               color: customBlack)
         ]),
         const TableRow(children: [
-          SizedBox(height: 15), //SizeBox Widget
-          SizedBox(height: 15),
-          SizedBox(height: 15),
+          SizedBox(height: 20), //SizeBox Widget
+          SizedBox(height: 20),
+          SizedBox(height: 20),
         ]),
         TableRow(children: [
           const AppText(
-              text: "Date",
+              text: "Phone No",
               size: 14,
               fontWeight: FontWeight.w400,
               color: customBlack),
           const Center(child: Text(':')),
           AppText(
-              text: date,
+              text: phone,
               size: 14,
               fontWeight: FontWeight.w400,
               color: customBlack)
         ]),
         const TableRow(children: [
-          SizedBox(height: 15), //SizeBox Widget
-          SizedBox(height: 15),
-          SizedBox(height: 15),
+          SizedBox(height: 20), //SizeBox Widget
+          SizedBox(height: 20),
+          SizedBox(height: 20),
         ]),
         TableRow(children: [
           const AppText(
-              text: "Time",
+              text: "Email",
               size: 14,
               fontWeight: FontWeight.w400,
               color: customBlack),
           const Center(child: Text(':')),
           AppText(
-              text: time,
+              text: email,
               size: 14,
               fontWeight: FontWeight.w400,
               color: customBlack)
         ]),
-        const TableRow(children: [
-          SizedBox(height: 15), //SizeBox Widget
-          SizedBox(height: 15),
-          SizedBox(height: 15),
-        ]),
-        TableRow(
-          children: [
-            const AppText(
-                text: "Location",
-                size: 14,
-                fontWeight: FontWeight.w400,
-                color: customBlack),
-            const Center(child: Text(':')),
-            AppText(
-                text: place,
-                size: 14,
-                fontWeight: FontWeight.w400,
-                color: customBlack)
-          ],
-        )
       ],
       columnWidths: const {
         0: FlexColumnWidth(4),

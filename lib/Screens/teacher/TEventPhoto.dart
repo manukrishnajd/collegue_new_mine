@@ -1,4 +1,3 @@
-import 'package:college_app/Screens/student/AddPhoto.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/EventCard.dart';
@@ -92,10 +91,13 @@ class PrevDetails extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               //participend list.............................
-              itemBuilder: (context, index) => const StudentTile(
-                  img: "assets/teac.png",
-                  name: "Name",
-                  department: "department"),
+              itemBuilder: (context, index) => StudentTile(
+                img: "assets/teac.png",
+                name: "Name",
+                department: "department",
+                mode: true, // if mode true cancel button will be show.....
+                click: () {},
+              ),
               itemCount: 3,
             ),
           )

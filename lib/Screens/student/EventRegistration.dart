@@ -1,3 +1,4 @@
+import 'package:college_app/Screens/student/Success.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
@@ -50,11 +51,23 @@ class EventRegistration extends StatelessWidget {
           ),
           Expanded(
               child: ListView.builder(
-            itemBuilder: (context, index) => const StudentTile(
-                img: "assets/teac.png", name: "Name", department: "department"),
+            itemBuilder: (context, index) => StudentTile(
+              img: "assets/teac.png",
+              name: "Name",
+              department: "department",
+              click: () {},
+            ),
             itemCount: 2,
           )),
-          CustomButton(btnname: "Register", click: () {})
+          CustomButton(
+              btnname: "Register",
+              click: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RegSuccess(),
+                    ));
+              })
         ]),
       ),
     );

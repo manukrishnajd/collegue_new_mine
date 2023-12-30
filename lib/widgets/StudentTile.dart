@@ -9,10 +9,15 @@ class StudentTile extends StatelessWidget {
     required this.img,
     required this.name,
     required this.department,
+    required this.click,
+    this.mode = false,
   });
   final String img;
   final String name;
   final String department;
+  final void Function() click;
+  final bool
+      mode; // if mode is true cancel button will be shown in the List Tile.................
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -35,7 +40,14 @@ class StudentTile extends StatelessWidget {
             size: 12,
             fontWeight: FontWeight.w400,
             color: customBlack),
+        trailing: mode == true
+            ? const Icon(
+                Icons.cancel,
+                color: maincolor,
+              )
+            : const SizedBox(),
         tileColor: tileColor,
+        onTap: click,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6).r),
       ),
     );

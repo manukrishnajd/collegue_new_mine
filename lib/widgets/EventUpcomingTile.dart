@@ -8,9 +8,11 @@ class EventUpcomingTila extends StatelessWidget {
     super.key,
     required this.title,
     required this.delete,
+    required this.click,
   });
 
   final String title;
+  final void Function() click;
   final void Function() delete;
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class EventUpcomingTila extends StatelessWidget {
             color: customWhite,
           ),
         ),
+        onTap: click,
         tileColor: maincolor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6).r),
       ),

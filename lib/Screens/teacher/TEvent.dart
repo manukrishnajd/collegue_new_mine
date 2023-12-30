@@ -1,5 +1,7 @@
+import 'package:college_app/Screens/teacher/TAddEvent.dart';
+import 'package:college_app/Screens/teacher/TEventDetails.dart';
+import 'package:college_app/Screens/teacher/TEventPhoto.dart';
 import 'package:college_app/constants/colors.dart';
-import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/EventTile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -38,7 +40,7 @@ class TEvent extends StatelessWidget {
             height: 20.h,
           ),
           const Expanded(
-              child: TabBarView(children: [EventList(), RequstList()]))
+              child: TabBarView(children: [UpEventList(), PreviousList()]))
         ]),
       ),
     );
@@ -46,8 +48,8 @@ class TEvent extends StatelessWidget {
 }
 
 //Upcoming EventList .................
-class EventList extends StatelessWidget {
-  const EventList({super.key});
+class UpEventList extends StatelessWidget {
+  const UpEventList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -58,11 +60,11 @@ class EventList extends StatelessWidget {
             itemBuilder: (context, index) => EventTile(
                 title: "food festival",
                 click: () {
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) => EventRegistration(),
-                  //     ));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TEventDetails(),
+                      ));
                 }),
             itemCount: 2,
           ),
@@ -72,11 +74,11 @@ class EventList extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 10).r,
               child: FloatingActionButton(
                 onPressed: () {
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) => EventRequest(),
-                  //     ));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TAddEvent(),
+                      ));
                 }, // Event Add Function...........
                 shape: const CircleBorder(),
                 backgroundColor: maincolor,
@@ -95,8 +97,8 @@ class EventList extends StatelessWidget {
 }
 
 //Previous EventList .................
-class RequstList extends StatelessWidget {
-  const RequstList({super.key});
+class PreviousList extends StatelessWidget {
+  const PreviousList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -105,11 +107,10 @@ class RequstList extends StatelessWidget {
         itemBuilder: (context, index) => EventTile(
             title: "food festival",
             click: () {
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => EventRegistration(),
-              //     ));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TEventPhoto()));
             }),
         itemCount: 2,
       ),

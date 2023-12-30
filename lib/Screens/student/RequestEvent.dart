@@ -74,8 +74,12 @@ class RequestEvent extends StatelessWidget {
             SizedBox(
               height: 10.h,
             ),
-            const StudentTile(
-                img: "assets/teac.png", name: "Host", department: "department"),
+            StudentTile(
+              img: "assets/teac.png",
+              name: "Host",
+              department: "department",
+              click: () {},
+            ),
             SizedBox(
               height: 20.h,
             ),

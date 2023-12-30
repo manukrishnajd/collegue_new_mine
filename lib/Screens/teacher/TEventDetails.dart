@@ -40,7 +40,7 @@ class TEventDetails extends StatelessWidget {
               time: "10.00 Am",
               location: 'College Hall'),
           Padding(
-            padding: const EdgeInsets.only(top: 40).r,
+            padding: const EdgeInsets.only(top: 40, bottom: 20).r,
             child: const AppText(
                 text: "participants",
                 size: 15,
@@ -49,8 +49,13 @@ class TEventDetails extends StatelessWidget {
           ),
           Expanded(
               child: ListView.builder(
-            itemBuilder: (context, index) => const StudentTile(
-                img: "assets/teac.png", name: "Name", department: "department"),
+            itemBuilder: (context, index) => StudentTile(
+              img: "assets/teac.png",
+              name: "Name",
+              department: "department",
+              mode: true, // if mode true cancel button will be show.....
+              click: () {},
+            ),
             itemCount: 2,
           )),
         ]),

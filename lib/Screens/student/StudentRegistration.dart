@@ -1,4 +1,3 @@
-import 'package:college_app/Screens/student/Success.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
@@ -6,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class StudentRegister extends StatefulWidget {
-  StudentRegister({super.key});
+  const StudentRegister({super.key});
 
   @override
   State<StudentRegister> createState() => _StudentRegisterState();
@@ -50,7 +49,14 @@ class _StudentRegisterState extends State<StudentRegister> {
               Padding(
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
-                  controller: name, // controller........
+                  controller: name, // controller.........
+                  validator: (value) {
+                    if (value != null || value == null) {
+                      // validator.....
+                      return "Enter your name";
+                    }
+                    return null;
+                  }, // controller........
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -69,7 +75,14 @@ class _StudentRegisterState extends State<StudentRegister> {
               Padding(
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
-                  controller: departmnet, // controller........
+                  controller: departmnet,
+                  validator: (value) {
+                    if (value != null || value == null) {
+                      // validator.....
+                      return "Enter your department";
+                    }
+                    return null;
+                  }, // controller........
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -89,6 +102,13 @@ class _StudentRegisterState extends State<StudentRegister> {
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
                   controller: registerno, // controller........
+                  validator: (value) {
+                    if (value != null || value == null) {
+                      // validator.....
+                      return "Enter your Register no";
+                    }
+                    return null;
+                  },
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -108,6 +128,12 @@ class _StudentRegisterState extends State<StudentRegister> {
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
                   controller: phone, // controller........
+                  validator: (value) {
+                    if (value?.length != 10) {
+                      // validation............
+                      return 'Please enter mobile number'; // validator.........
+                    }
+                  },
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -128,7 +154,12 @@ class _StudentRegisterState extends State<StudentRegister> {
                 child: TextFormField(
                   controller: email, // controller........
                   validator: (value) {
-                    if (value!.isEmpty || value == null) return "email";
+                    // validator.........
+                    if (value!.isEmpty ||
+                        !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(value)) {
+                      return 'Enter a valid email!';
+                    }
                   },
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
@@ -151,7 +182,9 @@ class _StudentRegisterState extends State<StudentRegister> {
                   controller: password,
                   obscureText: true, // controller........
                   validator: (value) {
-                    if (value!.isEmpty || value == null) return "email";
+                    if (value?.length != 6) {
+                      return "Enter  atleast 6 character";
+                    }
                   },
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
@@ -168,12 +201,7 @@ class _StudentRegisterState extends State<StudentRegister> {
                 child: CustomButton(
                     btnname: "Submit",
                     click: () {
-                      //formkey.currentState!.validate();
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RegSuccess(),
-                          ));
+                      formkey.currentState!.validate();
                     }),
               )
             ]),

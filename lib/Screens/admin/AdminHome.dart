@@ -28,10 +28,13 @@ class AdminHome extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => NotificationScreen(),
+                        builder: (context) => const NotificationScreen(),
                       ));
                 },
                 child: const Icon(Icons.notifications_active_outlined)),
+            SizedBox(
+              width: 20.w,
+            ),
           ],
         ),
         body: Padding(

@@ -1,6 +1,7 @@
 import 'package:college_app/Screens/teacher/TEvent.dart';
 import 'package:college_app/Screens/teacher/TNotification.dart';
 import 'package:college_app/Screens/teacher/TProfile.dart';
+import 'package:college_app/Screens/teacher/TStudentDetails.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/StudentTile.dart';
@@ -96,8 +97,19 @@ class StudentList extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
-        itemBuilder: (context, index) => const StudentTile(
-            img: "assets/user.png", name: "name", department: "department"),
+        itemBuilder: (context, index) => StudentTile(
+          img: "assets/user.png",
+          name: "name",
+          department: "department",
+          click: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  //goto notification......................................
+                  builder: (context) => const TStudentDetails(),
+                ));
+          },
+        ),
         itemCount: 3,
       ),
     );
