@@ -29,10 +29,21 @@ import 'package:college_app/Screens/teacher/TProfile.dart';
 import 'package:college_app/Screens/teacher/TRegistration.dart';
 import 'package:college_app/Screens/teacher/TSignIn.dart';
 import 'package:college_app/Screens/teacher/TStudentDetails.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+        apiKey:"AIzaSyA9PvRxW3eUnYlI0Z7f8hyP9PyYM-DTVJY",
+        appId: "1:237434890689:android:0e00ea111e4033887ce740",
+        messagingSenderId: "237434890689",
+        projectId: "college-app-769d1")
+
+
+  );
   runApp(const MyApp());
 }
 
@@ -52,7 +63,7 @@ class MyApp extends StatelessWidget {
             // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             // useMaterial3: true,
           ),
-          home: TRegistration()),
+          home: Splash()),
       designSize: Size(390, 844),
     );
   }

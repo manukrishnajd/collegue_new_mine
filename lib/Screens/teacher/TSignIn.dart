@@ -1,8 +1,11 @@
+import 'package:college_app/Screens/student/SignIn.dart';
 import 'package:college_app/Screens/teacher/THome.dart';
 import 'package:college_app/Screens/teacher/TRegistration.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,6 +20,21 @@ class _TSignInState extends State<TSignIn> {
   final username = TextEditingController();
   final password = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  String _email = "";
+  String _password = "";
+
+
+  void _handleLogIn() async{
+    try{
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email:_email, password: _password);
+      print("user loggedin : ${userCredential.user?.email}");
+    }catch(e){
+      print("error during registeration : $e");
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,11 +105,14 @@ class _TSignInState extends State<TSignIn> {
                         btnname: "Login",
                         click: () {
                           // formKey.currentState!.validate(); // Login.............................................
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const THome(),
-                              ));
+                       //   if (formKey.currentState!.validate()) {
+                                _handleLogIn();
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) => const THome()),
+                            // );
+
+                       //   }
                         }),
                     SizedBox(
                       height: 20.h,

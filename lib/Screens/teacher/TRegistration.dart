@@ -1,6 +1,10 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,12 +16,12 @@ class TRegistration extends StatefulWidget {
 }
 
 class _TRegistrationState extends State<TRegistration> {
-  final name = TextEditingController();
-  final departmnet = TextEditingController();
-  final registerno = TextEditingController();
-  final phone = TextEditingController();
-  final email = TextEditingController();
-  final password = TextEditingController();
+  final namectrl = TextEditingController();
+  final departmnetctrl = TextEditingController();
+ // final registerno = TextEditingController();
+  final phonectrl = TextEditingController();
+  final emailctrl = TextEditingController();
+  final passwordctrl = TextEditingController();
   final formkey = GlobalKey<FormState>();
 
   @override
@@ -49,7 +53,7 @@ class _TRegistrationState extends State<TRegistration> {
               Padding(
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
-                  controller: name,
+                  controller:namectrl,
                   validator: (value) {
                     if (value != null || value == null) {
                       // validator.....
@@ -75,7 +79,7 @@ class _TRegistrationState extends State<TRegistration> {
               Padding(
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
-                  controller: departmnet, // controller........
+                  controller: departmnetctrl, // controller........
                   validator: (value) {
                     if (value != null || value == null) {
                       // validator.....
@@ -101,7 +105,7 @@ class _TRegistrationState extends State<TRegistration> {
               Padding(
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
-                  controller: phone, // controller........
+                  controller: phonectrl, // controller........
                   validator: (value) {
                     if (value?.length != 10) {
                       // validation............
@@ -126,7 +130,7 @@ class _TRegistrationState extends State<TRegistration> {
               Padding(
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
-                  controller: email, // controller........
+                  controller: emailctrl, // controller........
                   validator: (value) {
                     // validator.........
                     if (value!.isEmpty ||
@@ -153,7 +157,7 @@ class _TRegistrationState extends State<TRegistration> {
               Padding(
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
-                  controller: password,
+                  controller: passwordctrl,
                   obscureText: true, // controller........
                  validator: (value) {
                     if (value?.length != 6) {
@@ -175,7 +179,30 @@ class _TRegistrationState extends State<TRegistration> {
                 child: CustomButton(
                     btnname: "Submit",
                     click: () {
-                      formkey.currentState!.validate();
+                    //  formkey.currentState!.validate();
+                      if (formkey.currentState!.validate()) {
+
+                          var name = namectrl.text.trim();
+                          var department = departmnetctrl.text.trim();
+                          var phone = phonectrl.text.trim();
+                          var email = emailctrl.text.trim();
+                          var password = passwordctrl.text.trim();
+
+                          FirebaseAuth.instance.createUserWithEmailAndPassword(
+                              email: email, password:password).then((value) => {
+                                log( "user created" as num)
+                                
+                          });
+
+                          // 'department': departmnet.text,
+                          // 'phone':phone.text,
+                          // 'email':email.text,
+                          // 'password':password.text,
+                          //
+
+                      }
+
+
                       // Navigator.pushReplacement(
                       //     context,
                       //     MaterialPageRoute(
