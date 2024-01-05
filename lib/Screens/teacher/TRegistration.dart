@@ -18,11 +18,45 @@ class TRegistration extends StatefulWidget {
 class _TRegistrationState extends State<TRegistration> {
   final namectrl = TextEditingController();
   final departmnetctrl = TextEditingController();
- // final registerno = TextEditingController();
+  // final registerno = TextEditingController();
   final phonectrl = TextEditingController();
   final emailctrl = TextEditingController();
   final passwordctrl = TextEditingController();
   final formkey = GlobalKey<FormState>();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  void _addToFirestore() async {
+    try {
+      await _firestore.collection('teachers').add({
+        'name': namectrl.text,
+        'department': departmnetctrl.text,
+        // 'registerno': registerno.text, // Add if available in your form
+        'phone': phonectrl.text,
+        'email': emailctrl.text,
+        // You might want to consider encrypting passwords before storing them in Firestore
+        // Storing passwords in plain text is not recommended for security reasons
+        // For demo purposes, storing plain text password here
+        'password': passwordctrl.text,
+        'timestamp': FieldValue.serverTimestamp(),
+        'status':'accepted'
+      });
+    } catch (e) {
+      print('Error adding to Firestore: $e');
+      // Handle error, maybe show an error message to the user
+    }
+  }
+
+  void _submitForm() {
+    if (formkey.currentState!.validate()) {
+      _addToFirestore();
+      // Navigate or perform any actions after adding to Firestore
+      // Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) => RegSuccess(),
+      //     ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,14 +87,7 @@ class _TRegistrationState extends State<TRegistration> {
               Padding(
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
-                  controller:namectrl,
-                  validator: (value) {
-                    if (value != null || value == null) {
-                      // validator.....
-                      return "Enter your name";
-                    }
-                    return null;
-                  }, // controller........
+                  controller: namectrl,
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -80,13 +107,7 @@ class _TRegistrationState extends State<TRegistration> {
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
                   controller: departmnetctrl, // controller........
-                  validator: (value) {
-                    if (value != null || value == null) {
-                      // validator.....
-                      return "Enter your department";
-                    }
-                    return null;
-                  }, // controller........
+                  // controller........
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -159,11 +180,7 @@ class _TRegistrationState extends State<TRegistration> {
                 child: TextFormField(
                   controller: passwordctrl,
                   obscureText: true, // controller........
-                 validator: (value) {
-                    if (value?.length != 6) {
-                      return "Enter  atleast 6 character";
-                    }
-                  },
+
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -178,37 +195,33 @@ class _TRegistrationState extends State<TRegistration> {
                 padding: const EdgeInsets.only(top: 100).r,
                 child: CustomButton(
                     btnname: "Submit",
-                    click: () {
-                    //  formkey.currentState!.validate();
-                      if (formkey.currentState!.validate()) {
+                    click: _submitForm 
+                      //  formkey.currentState!.validate();
+                      // if (formkey.currentState!.validate()) {
+                      //   var name = namectrl.text.trim();
+                      //   var department = departmnetctrl.text.trim();
+                      //   var phone = phonectrl.text.trim();
+                      //   var email = emailctrl.text.trim();
+                      //   var password = passwordctrl.text.trim();
 
-                          var name = namectrl.text.trim();
-                          var department = departmnetctrl.text.trim();
-                          var phone = phonectrl.text.trim();
-                          var email = emailctrl.text.trim();
-                          var password = passwordctrl.text.trim();
+                      //   FirebaseAuth.instance
+                      //       .createUserWithEmailAndPassword(
+                      //           email: email, password: password)
+                      //       .then((value) => {log("user created" as num)});
 
-                          FirebaseAuth.instance.createUserWithEmailAndPassword(
-                              email: email, password:password).then((value) => {
-                                log( "user created" as num)
-                                
-                          });
-
-                          // 'department': departmnet.text,
-                          // 'phone':phone.text,
-                          // 'email':email.text,
-                          // 'password':password.text,
-                          //
-
-                      }
-
+                      //   // 'department': departmnet.text,
+                      //   // 'phone':phone.text,
+                      //   // 'email':email.text,
+                      //   // 'password':password.text,
+                      //   //
+                      // }
 
                       // Navigator.pushReplacement(
                       //     context,
                       //     MaterialPageRoute(
                       //       builder: (context) => RegSuccess(),
                       //     ));
-                    }),
+                    ),
               )
             ]),
           ),

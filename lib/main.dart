@@ -32,20 +32,20 @@ import 'package:college_app/Screens/teacher/TStudentDetails.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'firebase_options.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: FirebaseOptions(
-        apiKey:"AIzaSyA9PvRxW3eUnYlI0Z7f8hyP9PyYM-DTVJY",
-        appId: "1:237434890689:android:0e00ea111e4033887ce740",
-        messagingSenderId: "237434890689",
-        projectId: "college-app-769d1")
-
-
+    options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseAppCheck.instance.activate();
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
