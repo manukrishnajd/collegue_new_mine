@@ -10,11 +10,13 @@ class StudDet extends StatelessWidget {
     required this.dipartment,
     required this.phone,
     required this.email,
+    required this.status,
   });
   final String regno;
   final String dipartment;
   final String phone;
   final String email;
+  final String status;
   @override
   Widget build(BuildContext context) {
     return Table(
@@ -82,6 +84,24 @@ class StudDet extends StatelessWidget {
           const Center(child: Text(':')),
           AppText(
               text: email,
+              size: 14,
+              fontWeight: FontWeight.w400,
+              color: customBlack)
+        ]),
+         const TableRow(children: [
+          SizedBox(height: 20), //SizeBox Widget
+          SizedBox(height: 20),
+          SizedBox(height: 20),
+        ]),
+        TableRow(children: [
+          const AppText(
+              text: "Status",
+              size: 14,
+              fontWeight: FontWeight.w400,
+              color: customBlack),
+          const Center(child: Text(':')),
+          AppText(
+              text: status,
               size: 14,
               fontWeight: FontWeight.w400,
               color: customBlack)

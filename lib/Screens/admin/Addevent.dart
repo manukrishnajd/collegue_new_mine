@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
@@ -13,6 +14,24 @@ class AddEvent extends StatelessWidget {
   final place = TextEditingController();
   final description = TextEditingController();
 
+ Future<void> addEventDataToFirestore(BuildContext context) async {
+    try {
+      await FirebaseFirestore.instance.collection('events').add({
+        'eventName': eventname.text,
+        'date': date.text,
+        'time': time.text,
+        'location': place.text,
+        'description': description.text,
+        'status': 'accepted', // Set the default status as 'accepted'
+      });
+      // Data added successfully
+      Navigator.pop(context); // Go back to previous screen after adding data
+    } catch (e) {
+      // Error occurred while adding data
+      print('Error adding event data: $e');
+      // Show an error message to the user if required
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -149,7 +168,7 @@ class AddEvent extends StatelessWidget {
                 SizedBox(
                   height: 40.h,
                 ),
-                CustomButton(btnname: "Submit", click: () {})
+                CustomButton(btnname: "Submit", click: () {addEventDataToFirestore(context);})
               ]),
         ),
       ),

@@ -1,15 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_app/Screens/teacher/TEvent.dart';
-import 'package:college_app/Screens/teacher/TNotification.dart';
-import 'package:college_app/Screens/teacher/TProfile.dart';
-import 'package:college_app/Screens/teacher/TStudentDetails.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/StudentTile.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:college_app/Screens/teacher/TProfile.dart';
+import 'package:college_app/Screens/teacher/TNotification.dart';
+import 'package:college_app/Screens/teacher/TStudentDetails.dart';
 
 class THome extends StatelessWidget {
-  const THome({super.key});
+  const THome({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,6 @@ class THome extends StatelessWidget {
             const Expanded(
                 child: TabBarView(children: [StudentList(), TEvent()])),
             Container(
-              // Tab bar.......................
               height: 60.h,
               decoration: BoxDecoration(
                   color: customWhite,
@@ -32,8 +32,8 @@ class THome extends StatelessWidget {
                 padding: const EdgeInsets.all(4).r,
                 child: TabBar(
                   indicator: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50), // Creates border
-                      color: maincolor), //Change background color from here
+                      borderRadius: BorderRadius.circular(50),
+                      color: maincolor),
                   tabs: [
                     Text("Students",
                         style: TextStyle(
@@ -56,62 +56,118 @@ class THome extends StatelessWidget {
   }
 }
 
-//StudentList................................................
 class StudentList extends StatelessWidget {
-  const StudentList({super.key});
+  const StudentList({Key? key});
+
+ Future<List<Map<String, dynamic>>> fetchStudentsData() async {
+  try {
+    QuerySnapshot<Map<String, dynamic>> studentsQuery =
+        await FirebaseFirestore.instance.collection('students').get();
+
+    List<Map<String, dynamic>> studentsData = [];
+
+    studentsQuery.docs.forEach((doc) {
+      Map<String, dynamic> student = doc.data();
+      student['id'] = doc.id; // Include the document ID in the student data
+      studentsData.add(student);
+    });
+
+    return studentsData;
+  } catch (e) {
+    print("Error fetching students: $e");
+    return [];
+  }
+}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: customWhite,
-        automaticallyImplyLeading: false,
         title: AppText(
-            text: "Students List",
-            size: 18.sp,
-            fontWeight: FontWeight.w500,
-            color: customBlack),
+          text: "Students List",
+          size: 18.sp,
+          fontWeight: FontWeight.w500,
+          color: customBlack,
+        ),
         centerTitle: true,
         actions: [
           InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      //goto profile......................................
-                      builder: (context) => TProfile(),
-                    ));
-              },
-              child: const Icon(Icons.person_2_outlined)),
-          SizedBox(width: 10.w),
-          InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      //goto notification......................................
-                      builder: (context) => TNotification(),
-                    ));
-              },
-              child: const Icon(Icons.notifications_active_outlined)),
-        ],
-      ),
-      body: ListView.builder(
-        itemBuilder: (context, index) => StudentTile(
-          img: "assets/user.png",
-          name: "name",
-          department: "department",
-          click: () {
-            Navigator.push(
+            onTap: () {
+              Navigator.push(
                 context,
                 MaterialPageRoute(
-                  //goto notification......................................
-                  builder: (context) => const TStudentDetails(),
-                ));
-          },
-        ),
-        itemCount: 3,
+                  builder: (context) => TProfile(),
+                ),
+              );
+            },
+            child: const Icon(Icons.person_2_outlined),
+          ),
+          SizedBox(width: 10.w),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TNotification(),
+                ),
+              );
+            },
+            child: const Icon(Icons.notifications_active_outlined),
+          ),
+        ],
       ),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: fetchStudentsData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No data available'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var studentData = snapshot.data![index];
+                 print('Student ID: ${studentData['id']}'); 
+                return StudentTile(
+                  img: studentData['img'] ?? "assets/user.png",
+                  name: studentData['name'] ?? "Name not available",
+                  department:
+                      studentData['department'] ?? "Department not available",
+                  click: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>  TStudentDetails(studentId: snapshot.data![index]['id']),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: THome(),
     );
   }
 }

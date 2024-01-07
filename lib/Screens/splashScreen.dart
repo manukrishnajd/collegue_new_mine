@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:college_app/Screens/student/SignIn.dart';
 import 'package:college_app/Screens/teacher/TSignIn.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class _SplashState extends State<Splash> {
     super.initState();
     Timer(Duration(seconds: 3), () {
       Navigator.pushReplacement(
-          context as BuildContext, MaterialPageRoute(builder: (context) => TSignIn()));
+          context as BuildContext, MaterialPageRoute(builder: (context) => SignIn()));
     });
   }
 

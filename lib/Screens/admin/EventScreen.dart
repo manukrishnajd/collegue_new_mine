@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_app/Screens/admin/Addevent.dart';
 import 'package:college_app/Screens/admin/EventDetails.dart';
 import 'package:college_app/constants/colors.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EventScreen extends StatelessWidget {
   const EventScreen({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +23,11 @@ class EventScreen extends StatelessWidget {
               tabs: [
                 Text(
                   "Upcoming",
-                  style:
-                      TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
                 ),
                 Text(
                   "Previous",
-                  style:
-                      TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
                 )
               ],
               labelColor: maincolor,
@@ -40,79 +40,130 @@ class EventScreen extends StatelessWidget {
             height: 20.h,
           ),
           const Expanded(
-              child: TabBarView(
-                  children: [EventUpcomingList(), EventPreviousList()]))
+            child: TabBarView(
+              children: [EventUpcomingList(), EventPreviousList()],
+            ),
+          )
         ]),
       ),
     );
   }
 }
 
-//Event Upcomming List..........................
 class EventUpcomingList extends StatelessWidget {
   const EventUpcomingList({super.key});
-
+Future<void> deleteEvent(String eventId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('events')
+          .doc(eventId)
+          .delete();
+    } catch (e) {
+      print('Error deleting event: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          ListView.builder(
-            itemBuilder: (context, index) => EventUpcomingTila(
-                title: "food festival",
-                click: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const EventDetails(),
-                      ));
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('events').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          final events = snapshot.data!.docs;
+          
+
+          return Stack(
+            children: [
+              ListView.builder(
+                itemBuilder: (context, index) {
+                  final event = events[index].data() as Map<String, dynamic>;
+                  final eventId = events[index].id;
+                  return EventUpcomingTila(
+                    title: event['eventName'] ?? 'Event Name',
+                    click: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EventDetails(),
+                        ),
+                      );
+                    },
+                    delete: () {
+                   deleteEvent(eventId); 
+                    },
+                  );
                 },
-                delete: () {
-                  // delete Function.............
-                }),
-            itemCount: 2,
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 10).r,
-              child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddEvent(),
-                      ));
-                }, // Event Add Function...........
-                shape: const CircleBorder(),
-                backgroundColor: maincolor,
-                child: const Icon(
-                  Icons.add,
-                  color: customWhite,
-                  size: 50,
+                itemCount: events.length,
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10).r,
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddEvent(),
+                        ),
+                      );
+                    }, // Event Add Function...........
+                    shape: const CircleBorder(),
+                    backgroundColor: maincolor,
+                    child: const Icon(
+                      Icons.add,
+                      color: customWhite,
+                      size: 50,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
 }
 
-//Event Previous List..........................
 class EventPreviousList extends StatelessWidget {
   const EventPreviousList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context, index) => const EventCard(
-          heading: "Onam Festival",
-          date: "08/28/2023",
-          time: "9:00 AM",
-          location: "College Hall"),
-      itemCount: 4,
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('events').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        final events = snapshot.data!.docs;
+
+        return ListView.builder(
+          itemBuilder: (context, index) {
+            final event = events[index].data() as Map<String, dynamic>;
+            return EventCard(
+              heading: event['eventName'] ?? 'Event Name',
+              date: event['date'] ?? 'Date',
+              time: event['time'] ?? 'Time',
+              location: event['location'] ?? 'Location',
+            );
+          },
+          itemCount: events.length,
+        );
+      },
     );
   }
 }

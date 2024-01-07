@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
@@ -19,6 +20,41 @@ class _StudentRegisterState extends State<StudentRegister> {
   final email = TextEditingController();
   final password = TextEditingController();
   final formkey = GlobalKey<FormState>();
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  void _addToFirestore() async {
+    try {
+      await _firestore.collection('students').add({
+        'name': name.text,
+        'department': departmnet.text,
+        'registerno': registerno.text, // Add if available in your form
+        'phone': phone.text,
+        'email': email.text,
+        // You might want to consider encrypting passwords before storing them in Firestore
+        // Storing passwords in plain text is not recommended for security reasons
+        // For demo purposes, storing plain text password here
+        'password': password.text,
+        'timestamp': FieldValue.serverTimestamp(),
+        'status':'pending'
+      });
+    } catch (e) {
+      print('Error adding to Firestore: $e');
+      // Handle error, maybe show an error message to the user
+    }
+  }
+
+  void _submitForm() {
+    if (formkey.currentState!.validate()) {
+      _addToFirestore();
+      // Navigate or perform any actions after adding to Firestore
+      // Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) => RegSuccess(),
+      //     ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +86,7 @@ class _StudentRegisterState extends State<StudentRegister> {
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
                   controller: name, // controller.........
-                  validator: (value) {
-                    if (value != null || value == null) {
-                      // validator.....
-                      return "Enter your name";
-                    }
-                    return null;
-                  }, // controller........
+                 // controller........
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -76,13 +106,7 @@ class _StudentRegisterState extends State<StudentRegister> {
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
                   controller: departmnet,
-                  validator: (value) {
-                    if (value != null || value == null) {
-                      // validator.....
-                      return "Enter your department";
-                    }
-                    return null;
-                  }, // controller........
+                   // controller........
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -102,13 +126,7 @@ class _StudentRegisterState extends State<StudentRegister> {
                 padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                 child: TextFormField(
                   controller: registerno, // controller........
-                  validator: (value) {
-                    if (value != null || value == null) {
-                      // validator.....
-                      return "Enter your Register no";
-                    }
-                    return null;
-                  },
+                  
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -181,11 +199,7 @@ class _StudentRegisterState extends State<StudentRegister> {
                 child: TextFormField(
                   controller: password,
                   obscureText: true, // controller........
-                  validator: (value) {
-                    if (value?.length != 6) {
-                      return "Enter  atleast 6 character";
-                    }
-                  },
+                  
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                           vertical: 10.h, horizontal: 15.w),
@@ -200,9 +214,9 @@ class _StudentRegisterState extends State<StudentRegister> {
                 padding: const EdgeInsets.only(top: 50).r,
                 child: CustomButton(
                     btnname: "Submit",
-                    click: () {
-                      formkey.currentState!.validate();
-                    }),
+                    
+                      click: _submitForm 
+                    ),
               )
             ]),
           ),

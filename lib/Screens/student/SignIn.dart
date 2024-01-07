@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_app/Screens/student/StudentHome.dart';
 import 'package:college_app/Screens/student/StudentRegistration.dart';
 import 'package:college_app/constants/colors.dart';
@@ -5,6 +6,7 @@ import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -71,13 +73,7 @@ class _SignInState extends State<SignIn> {
                     ),
                     TextFormField(
                       controller: password, // controller.........
-                      validator: (value) {
-                        if (value != null || value == null) {
-                          // validator.....
-                          return "enter password";
-                        }
-                        return null;
-                      },
+                      
                       obscureText: true,
                       cursorColor: customBlack,
                       decoration: const InputDecoration(
@@ -132,5 +128,52 @@ class _SignInState extends State<SignIn> {
         ],
       ),
     );
+  }
+  void validateLogin() async {
+    final String enteredEmail = username.text;
+    final String enteredPassword = password.text;
+
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('students')
+          .where('email', isEqualTo: enteredEmail)
+          .where('password', isEqualTo: enteredPassword)
+          .where('status', isEqualTo: 'accepted') // Check for 'accepted' status
+    .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        
+        String docId = querySnapshot.docs.first.id; // Get the Document ID
+
+        // Store Document ID in shared preferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('teacherId', docId);
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => StudentHome()),
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Invalid Credentials'),
+              content: Text('Please enter valid email and password.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 }

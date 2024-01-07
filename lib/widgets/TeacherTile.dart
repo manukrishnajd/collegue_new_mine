@@ -11,11 +11,13 @@ class TeacherTile extends StatelessWidget {
     required this.department,
     required this.cancel,
     required this.accept,
+    required this.status,
   });
 
   final String image;
   final String name;
   final String department;
+  final String status;
   final void Function() cancel;
   final void Function() accept;
   @override
@@ -30,15 +32,28 @@ class TeacherTile extends StatelessWidget {
           fit: BoxFit.fill,
         ),
         title: AppText(
-            text: name,
-            size: 15,
-            fontWeight: FontWeight.w400,
-            color: customBlack),
-        subtitle: AppText(
-            text: department,
-            size: 13,
-            fontWeight: FontWeight.w400,
-            color: customBlack),
+          text: name,
+          size: 15,
+          fontWeight: FontWeight.w400,
+          color: customBlack,
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppText(
+              text: department,
+              size: 13,
+              fontWeight: FontWeight.w400,
+              color: customBlack,
+            ),
+            AppText(
+              text: 'Status: $status',
+              size: 12,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey,
+            ),
+          ],
+        ),
         trailing: Row(mainAxisSize: MainAxisSize.min, children: [
           InkWell(
             //Reject Button............
