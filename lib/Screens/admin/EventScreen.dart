@@ -91,7 +91,7 @@ Future<void> deleteEvent(String eventId) async {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => EventDetails(),
+                          builder: (context) => EventDetails(eventId: eventId),
                         ),
                       );
                     },

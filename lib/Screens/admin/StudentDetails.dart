@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
@@ -6,7 +7,110 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class StudentDetails extends StatelessWidget {
-  const StudentDetails({super.key});
+  final String? requestId;
+
+  const StudentDetails({Key? key, this.requestId}) : super(key: key);
+
+  Future<Map<String, dynamic>> fetchStudentAndEventData() async {
+  try {
+    DocumentSnapshot<Map<String, dynamic>> requestSnapshot =
+        await FirebaseFirestore.instance
+            .collection('EventRequests')
+            .doc(requestId)
+            .get();
+
+    if (!requestSnapshot.exists) {
+      throw Exception('Request data not found');
+    }
+
+    String? studentId = requestSnapshot.data()?['StudentId'];
+
+    if (studentId == null) {
+      throw Exception('Student ID not found');
+    }
+
+    DocumentSnapshot<Map<String, dynamic>> studentSnapshot =
+        await FirebaseFirestore.instance
+            .collection('students')
+            .doc(studentId)
+            .get();
+
+    if (!studentSnapshot.exists) {
+      throw Exception('Student data not found');
+    }
+
+    Map<String, dynamic> eventData = requestSnapshot.data()!;
+    Map<String, dynamic> studentData = studentSnapshot.data()!;
+
+    // Combining both data into a single map
+    Map<String, dynamic> combinedData = {
+      ...eventData,
+      'studentData': studentData,
+    };
+
+    return combinedData;
+  } catch (e) {
+    print('Error fetching student and event data: $e');
+    throw e;
+  }
+}
+Future<void> acceptEventRequest() async {
+  try {
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentReference eventRequestRef =
+          FirebaseFirestore.instance.collection('EventRequests').doc(requestId);
+
+      DocumentSnapshot<Map<String, dynamic>> eventRequestSnapshot =
+          await eventRequestRef.get() as DocumentSnapshot<Map<String, dynamic>>; // Explicitly specify the type
+
+      if (!eventRequestSnapshot.exists) {
+        throw Exception('Request data not found');
+      }
+
+      DocumentReference eventRef = FirebaseFirestore.instance
+          .collection('events')
+          .doc(); // Create a new document in 'events' collection
+
+      Map<String, dynamic> eventData = eventRequestSnapshot.data()!;
+      eventData['status'] = 'accepted'; // Update status to 'accept'
+
+      transaction.set(eventRef, eventData); // Add data to 'events' collection
+
+      transaction.update(eventRequestRef, {
+        'status': 'accepted', // Update status to 'accept' in 'EventRequests'
+        'eventId': eventRef.id, // Add eventId in 'EventRequests'
+      });
+    });
+  } catch (e) {
+    print('Error accepting event request: $e');
+    throw e;
+  }
+}
+
+Future<void> rejectEventRequest() async {
+  try {
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentReference eventRequestRef =
+          FirebaseFirestore.instance.collection('EventRequests').doc(requestId);
+
+      DocumentSnapshot<Map<String, dynamic>> eventRequestSnapshot =
+          await eventRequestRef.get() as DocumentSnapshot<Map<String, dynamic>>; // Explicitly specify the type
+
+      if (!eventRequestSnapshot.exists) {
+        throw Exception('Request data not found');
+      }
+
+      transaction.update(eventRequestRef, {
+        'status': 'rejected', // Update status to 'rejected' in 'EventRequests'
+      });
+    });
+  } catch (e) {
+    print('Error rejecting event request: $e');
+    throw e;
+  }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +120,7 @@ class StudentDetails extends StatelessWidget {
           padding: const EdgeInsets.only(left: 20).r,
           child: InkWell(
             onTap: () {
-              Navigator.pop(context); // back arrow Function...........
+              Navigator.pop(context);
             },
             child: const Icon(
               Icons.arrow_back_ios,
@@ -25,86 +129,102 @@ class StudentDetails extends StatelessWidget {
           ),
         ),
         title: AppText(
-            text: "Student details",
-            size: 18.sp,
-            fontWeight: FontWeight.w500,
-            color: customBlack),
+          text: "Student details",
+          size: 18.sp,
+          fontWeight: FontWeight.w500,
+          color: customBlack,
+        ),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20).r,
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 30).r,
-                  child: Image.asset(
-                    "assets/stu.png",
-                    width: 100.w,
-                    height: 100.h,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: AppText(
-                      text: "Adhil",
-                      size: 14.sp,
-                      fontWeight: FontWeight.w400,
-                      color: customBlack),
-                ),
-                Padding(
-                    padding:
-                        const EdgeInsets.only(left: 50, right: 30, top: 50).r,
-                    child: DetailsCard(
-                        department: "Bcom",
-                        event: "food fest",
-                        date: "10/12/2023",
-                        time: "10.00 am",
-                        place: "college ground")),
-                SizedBox(
-                  height: 40.h,
-                ),
-                const Align(
-                  alignment: Alignment.bottomLeft,
-                  child: AppText(
-                      text: "Description :",
+        padding: const EdgeInsets.symmetric(horizontal: 20).r,
+        child: FutureBuilder<Map<String, dynamic>>(
+          future: fetchStudentAndEventData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else {
+               final combinedData = snapshot.data!;
+      final eventData = combinedData; // Extract event data
+      final studentData = combinedData['studentData'];
+              print(studentData);
+
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 30.h),
+                    Center(
+                      child: Image.asset(
+                        "assets/stu.png",
+                        width: 100.w,
+                        height: 100.h,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    SizedBox(height: 10.h),
+                    Center(
+                      child: AppText(
+                        text: studentData['name'] ?? '',
+                        size: 14.sp,
+                        fontWeight: FontWeight.w400,
+                        color: customBlack,
+                      ),
+                    ),
+                    SizedBox(height: 50.h),
+                    DetailsCard(
+                      department: studentData['department'] ?? '',
+                      event: eventData['eventName'] ?? '',
+                      date: eventData['date'] ?? '',
+                      time: eventData['time'] ?? '',
+                      place: eventData['location'] ?? '',
+                    ),
+                    SizedBox(height: 40.h),
+                    AppText(
+                      text: eventData['description'] ?? '',
                       size: 14,
                       fontWeight: FontWeight.w400,
-                      color: customBlack),
-                ),
-                SizedBox(
-                  height: 10.h,
-                ),
-                const Align(
-                  alignment: Alignment.bottomLeft,
-                  child: AppText(
-                      text:
-                          "Corem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur tempus urna at turpis condimentum lobortis.",
+                      color: customBlack,
+                    ),
+                    SizedBox(height: 10.h),
+                    AppText(
+                      text: studentData['description'] ?? '',
                       size: 12,
                       fontWeight: FontWeight.w400,
-                      color: customBlack),
+                      color: customBlack,
+                    ),
+                    SizedBox(height: 100.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: CustomButton(
+                            btnname: "Accept",
+                            click: () {
+                              acceptEventRequest();
+                              // Implement accept functionality
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 20.w),
+                        Expanded(
+                          child: CustomButton(
+                            btnname: "Reject",
+                            click: () {
+                              rejectEventRequest();
+                              // Implement reject functionality
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: 100.h,
-                ),
-              ]),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                children: [
-                  Expanded(
-                      child: CustomButton(btnname: "Accept", click: () {})),
-                  SizedBox(
-                    width: 20.w,
-                  ),
-                  Expanded(child: CustomButton(btnname: "Reject", click: () {}))
-                ],
-              ),
-            )
-          ],
+              );
+            }
+          },
         ),
       ),
     );

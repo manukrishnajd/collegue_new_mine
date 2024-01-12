@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:college_app/Screens/student/StudentHome.dart';
+import 'package:college_app/Screens/student/StudentRegistration.dart';
 import 'package:college_app/Screens/teacher/THome.dart';
-import 'package:college_app/Screens/teacher/TRegistration.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
@@ -12,10 +13,10 @@ class TSignIn extends StatefulWidget {
   const TSignIn({super.key});
 
   @override
-  State<TSignIn> createState() => _TSignInState();
+  State<TSignIn> createState() => _SignInState();
 }
 
-class _TSignInState extends State<TSignIn> {
+class _SignInState extends State<TSignIn> {
   final username = TextEditingController();
   final password = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -55,7 +56,7 @@ class _TSignInState extends State<TSignIn> {
                       height: 40.h,
                     ),
                     TextFormField(
-                      controller: username,
+                      controller: username, // controller.........
                       validator: (value) {
                         if (value!.isEmpty ||
                             !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -72,10 +73,8 @@ class _TSignInState extends State<TSignIn> {
                       height: 20.h,
                     ),
                     TextFormField(
-                      controller: password,
-                      validator: (value) {
-                        if (value != null) return " enter password";
-                      },
+                      controller: password, // controller.........
+                      
                       obscureText: true,
                       cursorColor: customBlack,
                       decoration: const InputDecoration(
@@ -88,12 +87,7 @@ class _TSignInState extends State<TSignIn> {
                     CustomButton(
                         btnname: "Login",
                         click: () {
-                          // formKey.currentState!.validate(); // Login.............................................
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const THome(),
-                              ));
+                        validateLogin();
                         }),
                     SizedBox(
                       height: 20.h,
@@ -112,7 +106,7 @@ class _TSignInState extends State<TSignIn> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      TRegistration(), // Sign up...............................
+                                      StudentRegister(), // Sign up...............................
                                 ));
                           },
                           child: const AppText(
@@ -141,6 +135,7 @@ class _TSignInState extends State<TSignIn> {
           .where('password', isEqualTo: enteredPassword)
           .where('status', isEqualTo: 'accepted') // Check for 'accepted' status
     .get();
+    print(querySnapshot.docs);
 
       if (querySnapshot.docs.isNotEmpty) {
         

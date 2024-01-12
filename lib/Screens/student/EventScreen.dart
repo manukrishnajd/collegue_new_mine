@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_app/Screens/student/EventRegistration.dart';
 import 'package:college_app/Screens/student/EventRequest.dart';
 import 'package:college_app/Screens/student/RequestEvent.dart';
@@ -50,77 +51,124 @@ class SRequestScreen extends StatelessWidget {
 
 //Upcoming EventList .................
 class EventList extends StatelessWidget {
-  const EventList({super.key});
+  const EventList({Key? key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView.builder(
-        itemBuilder: (context, index) => EventTile(
-            title: "food festival",
-            click: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EventRegistration(),
-                  ));
-            }),
-        itemCount: 3,
-      ),
+    return FutureBuilder<QuerySnapshot>(
+      future: fetchEvents(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Center(child: Text('No events available'));
+        } else {
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              final event = snapshot.data!.docs[index];
+              return EventTile(
+                title: event['eventName'] ?? 'Untitled',
+                click: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EventRegistration(
+                        eventId: event.id, // Pass the eventId to EventRegistration
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        }
+      },
     );
   }
-}
 
+  Future<QuerySnapshot> fetchEvents() async {
+    return FirebaseFirestore.instance.collection('events').get();
+  }
+}
 //Upcoming RequstList .................
 class RequstList extends StatelessWidget {
-  const RequstList({super.key});
+  const RequstList({Key? key});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         Scaffold(
-          body: ListView.builder(
-            itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.only(bottom: 10).r,
-              child: ListTile(
-                title: const AppText(
-                    text: "Holi festival",
-                    size: 14,
-                    fontWeight: FontWeight.w500,
-                    color: customWhite),
-                tileColor: maincolor,
-                trailing: const AppText(
-                    text: "Accept",
-                    size: 12,
-                    fontWeight: FontWeight.w500,
-                    color: customWhite),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const RequestEvent(),
-                      ));
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6).r),
-              ),
-            ),
-            itemCount: 2,
+          body: FutureBuilder<QuerySnapshot>(
+            future: fetchEventRequests(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return Center(child: Text('No event requests available'));
+              } else {
+                return ListView.builder(
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    final request = snapshot.data!.docs[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10).r,
+                      child: ListTile(
+                        title: Text(
+                          request['eventName'] ?? 'Untitled',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: customWhite,
+                          ),
+                        ),
+                        tileColor: maincolor,
+                        trailing: AppText(
+                          text: request['status'],
+                          size: 12,
+                          fontWeight: FontWeight.w500,
+                          color: customWhite,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RequestEvent(),
+                            ),
+                          );
+                        },
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6).r,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }
+            },
           ),
         ),
-        Align(
-          alignment: Alignment.bottomCenter,
+        Positioned(
+          bottom: 10.0,
+          right: 0.0,
+          left: 0.0,
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 10).r,
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: FloatingActionButton(
               onPressed: () {
+                // Navigate to a page to view event names
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EventRequest(),
-                    ));
-              }, // Event Add Function...........
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EventRequest(),
+                  ),
+                );
+              },
               shape: const CircleBorder(),
               backgroundColor: maincolor,
               child: const Icon(
@@ -133,5 +181,9 @@ class RequstList extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<QuerySnapshot> fetchEventRequests() async {
+    return FirebaseFirestore.instance.collection('EventRequests').get();
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
@@ -6,22 +7,132 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EventDetails extends StatefulWidget {
-  const EventDetails({super.key});
+  final String eventId; // Declare eventId variable
+  const EventDetails({Key? key, required this.eventId}) : super(key: key);
+  
 
   @override
   State<EventDetails> createState() => _EventDetailsState();
 }
 
 class _EventDetailsState extends State<EventDetails> {
-  List<String> droplist = [];
+   List<Map<String, dynamic>> droplist = [];// Sample list for dropdown
   String? selectedvalue;
+  Map<String, dynamic>? eventData;
+  bool isLoading = true;
+ String teacherName = '';
+  String teacherDepartment = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchEventDetails();
+    fetchTeachersData(); 
+
+  }
+
+    Future<void> fetchTeachersData() async {
+      
+    try {
+      QuerySnapshot teachersSnapshot = await FirebaseFirestore.instance
+          .collection('teachers')
+          .get();
+
+       if (teachersSnapshot.docs.isNotEmpty) {
+      setState(() {
+         droplist = teachersSnapshot.docs
+            .map((doc) => {
+                  'name': doc['name'] as String,
+                  'id': doc.id,
+                })
+            .toList();
+      });
+    }
+    } catch (e) {
+      print('Error fetching teachers data: $e');
+    }
+  }
+
+ Future<void> fetchTeacherData() async {
+    try {
+      String hostId = eventData!['hostId'];
+      print(hostId);
+
+      QuerySnapshot teachersSnapshot = await FirebaseFirestore.instance
+          .collection('teachers')
+          .where(FieldPath.documentId, isEqualTo: hostId)
+          .get();
+
+      if (teachersSnapshot.docs.isNotEmpty) {
+        DocumentSnapshot teacherSnapshot = teachersSnapshot.docs.first;
+        setState(() {
+          teacherName = teacherSnapshot['name'];
+          teacherDepartment = teacherSnapshot['department'];
+        });
+      } else {
+        print('No teacher found with the given hostId: $hostId');
+      }
+    } catch (e) {
+      print('Error fetching teacher data: $e');
+    }
+  }
+
+
+  Future<void> fetchEventDetails() async {
+    try {
+      DocumentSnapshot eventSnapshot = await FirebaseFirestore.instance
+          .collection('events')
+          .doc(widget.eventId)
+          .get();
+
+      if (eventSnapshot.exists) {
+        setState(() {
+          eventData = eventSnapshot.data() as Map<String, dynamic>;
+          isLoading = false;
+           fetchTeacherData();
+          print(eventData);
+        });
+      } else {
+        // Handle if the event with the provided eventId doesn't exist
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      // Handle errors while fetching event details
+      print('Error fetching event details: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> addHostToEvent() async {
+    if (selectedvalue != null) {
+    // Perform the operation to add the selected hostId to the event collection
+    try {
+      FirebaseFirestore.instance.collection('events').doc(widget.eventId).update({
+        'hostId': selectedvalue,
+      }).then((value) {
+        print('Host added to event with ID: ${widget.eventId}');
+      });
+    } catch (e) {
+      print('Error adding host to event: $e');
+    }
+  } else {
+    print('Please select a host');
+  }
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-          padding: const EdgeInsets.only(left: 20).r,
+          padding: const EdgeInsets.only(left: 20),
           child: InkWell(
             onTap: () {
               Navigator.pop(context); // back arrow Function...........
@@ -33,204 +144,236 @@ class _EventDetailsState extends State<EventDetails> {
           ),
         ),
         title: AppText(
-            text: "Event details",
-            size: 18.sp,
-            fontWeight: FontWeight.w500,
-            color: customBlack),
+          text: "Event details",
+          size: 18.sp,
+          fontWeight: FontWeight.w500,
+          color: customBlack,
+        ),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20).r,
+        padding: const EdgeInsets.only(left: 20, right: 20),
         child: SingleChildScrollView(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SizedBox(
-              height: 20.h,
-            ),
-            const Align(
-              alignment: Alignment.topCenter,
-              child: AppText(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20.h),
+              const Align(
+                alignment: Alignment.topCenter,
+                child: AppText(
                   text: "Food Festival",
                   size: 15,
                   fontWeight: FontWeight.w500,
-                  color: maincolor),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 40.h),
-              child: const EventDet(
-                  date: "12-12-2024",
-                  time: "10.00 Am",
-                  date2: "25-12-2023",
-                  location: "College Ground"),
-            ),
-            const AppText(
+                  color: maincolor,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 40.h),
+                child: EventDet(
+                  name: eventData!['eventName'],
+                  description: eventData!['description'],
+                  date: eventData!['date'],
+                  time: eventData!['time'],
+                  status: eventData!['status'],
+                  location: eventData!['location'],
+                ),
+              ),
+              const AppText(
                 text: "Description",
                 size: 15,
                 fontWeight: FontWeight.w400,
-                color: customBlack),
-            SizedBox(
-              height: 20.h,
-            ),
-            const AppText(
-                text:
-                    "traditional genres such as folk and classical music,  music festival can be defined as a community event, with performances of singing and instrument playing, that is often presented with a theme such as a music genre ",
+                color: customBlack,
+              ),
+              SizedBox(height: 20.h),
+              AppText(
+                text: eventData!['description'],
                 size: 12,
                 fontWeight: FontWeight.w400,
-                color: customBlack),
-            SizedBox(
-              height: 20.h,
-            ),
-            const AppText(
+                color: customBlack,
+              ),
+              SizedBox(height: 20.h),
+              const AppText(
                 text: "Host",
                 size: 15,
                 fontWeight: FontWeight.w500,
-                color: maincolor),
-            SizedBox(
-              height: 10.h,
-            ),
-            StudentTile(
-              // StudentDetails Custom Tile...................
-              img: "assets/teac.png",
-              name: "Name",
-              department: "department",
-              click: () {},
-            ),
-            SizedBox(
-              height: 20.h,
-            ),
-            const AppText(
+                color: maincolor,
+              ),
+              SizedBox(height: 10.h),
+              StudentTile(
+                img: "assets/teac.png",
+                name: teacherName,
+                department: teacherDepartment,
+                click: () {},
+              ),
+              SizedBox(height: 20.h),
+              const AppText(
                 text: "Add Host",
                 size: 15,
                 fontWeight: FontWeight.w500,
-                color: maincolor),
-            SizedBox(
-              height: 10.h,
-            ),
-            Container(
-              height: 50.h,
-              color: Colors.grey[200],
-              child: DropdownButton<String>(
-                isExpanded: true,
-                elevation: 0,
-                underline: const SizedBox(),
-                value: selectedvalue,
-                items: droplist.map((String value) {
-                  return DropdownMenuItem<String>(
-                      value: value, child: Text(value));
-                }).toList(),
-                onChanged: (newvalue) {
-                  setState(() {
-                    selectedvalue = newvalue;
-                  });
-                },
-                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                color: maincolor,
               ),
-            ),
-            SizedBox(
-              height: 40.h,
-            ),
-            CustomButton(
+              SizedBox(height: 10.h),
+               Container(
+                height: 50.h,
+                color: Colors.grey[200],
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  elevation: 0,
+                  underline: const SizedBox(),
+                  value: selectedvalue,
+                  items: droplist.map<DropdownMenuItem<String>>((teacher) {
+              return DropdownMenuItem<String>(
+                value: teacher['id'] as String,
+                child: Text(teacher['name'] as String),
+              );
+            }).toList(),
+                  onChanged: (newvalue) {
+                    setState(() {
+                      selectedvalue = newvalue;
+                    });
+                  },
+                  padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                ),
+              ),
+              SizedBox(height: 40.h),
+              CustomButton(
                 btnname: "Add Host",
-                click: () {}), // adhost function................
-            SizedBox(
-              height: 15.h,
-            ),
-            CustomButton(
-                btnname: "Conform",
-                click: () {}), // conform function...................
-            SizedBox(
-              height: 20.h,
-            )
-          ]),
+                click: addHostToEvent,
+                
+              ),
+              SizedBox(height: 15.h),
+              CustomButton(
+                btnname: "Confirm",
+                click: () {
+                  // Confirm functionality
+                  print("Confirm Clicked");
+                },
+              ),
+              SizedBox(height: 20.h),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-// event details Custom Model...............................
 class EventDet extends StatelessWidget {
   const EventDet({
-    super.key,
+    Key? key,
     required this.date,
     required this.time,
-    required this.date2,
     required this.location,
-  });
+    required this.name,
+    required this.description,
+    required this.status,
+  }) : super(key: key);
+
   final String date;
+  final String name;
   final String time;
-  final String date2;
   final String location;
+  final String description;
+  final String status;
+
   @override
   Widget build(BuildContext context) {
     return Table(
       children: [
         TableRow(children: [
           const AppText(
-              text: "Dtae",
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack),
+            text: "Name",
+            size: 14,
+            fontWeight: FontWeight.w400,
+            color: customBlack,
+          ),
           const Text(":"),
           AppText(
-              text: date,
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack)
+            text: name,
+            size: 14,
+            fontWeight: FontWeight.w400,
+            color: customBlack,
+          )
         ]),
         const TableRow(children: [
-          SizedBox(height: 15), //SizeBox Widget
+          SizedBox(height: 15), // SizedBox Widget
           SizedBox(height: 15),
           SizedBox(height: 15),
         ]),
         TableRow(children: [
           const AppText(
-              text: "Time",
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack),
-          const Text(':'),
+            text: "Date",
+            size: 14,
+            fontWeight: FontWeight.w400,
+            color: customBlack,
+          ),
+          const Text(":"),
           AppText(
-              text: time,
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack)
+            text: date,
+            size: 14,
+            fontWeight: FontWeight.w400,
+            color: customBlack,
+          )
         ]),
         const TableRow(children: [
-          SizedBox(height: 15), //SizeBox Widget
+          SizedBox(height: 15), // SizedBox Widget
           SizedBox(height: 15),
           SizedBox(height: 15),
         ]),
         TableRow(children: [
           const AppText(
-              text: "Date",
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack),
+            text: "Time",
+            size: 14,
+            fontWeight: FontWeight.w400,
+            color: customBlack,
+          ),
           const Text(':'),
           AppText(
-              text: date2,
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack)
+            text: time,
+            size: 14,
+            fontWeight: FontWeight.w400,
+            color: customBlack,
+          )
         ]),
         const TableRow(children: [
-          SizedBox(height: 15), //SizeBox Widget
+          SizedBox(height: 15), // SizedBox Widget
           SizedBox(height: 15),
           SizedBox(height: 15),
         ]),
         TableRow(children: [
           const AppText(
-              text: "Location",
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack),
+            text: "Status",
+            size: 14,
+            fontWeight: FontWeight.w400,
+            color: customBlack,
+          ),
           const Text(':'),
           AppText(
-              text: location,
-              size: 14,
-              fontWeight: FontWeight.w400,
-              color: customBlack)
+            text: status,
+            size: 14,
+            fontWeight: FontWeight.w400,
+            color: customBlack,
+          )
+        ]),
+        const TableRow(children: [
+          SizedBox(height: 15), // SizedBox Widget
+          SizedBox(height: 15),
+          SizedBox(height: 15),
+        ]),
+        TableRow(children: [
+          const AppText(
+            text: "Location",
+            size: 14,
+            fontWeight: FontWeight.w400,
+            color: customBlack,
+          ),
+          const Text(':'),
+          AppText(
+            text: location,
+            size: 14,
+            fontWeight: FontWeight.w400,
+            color: customBlack,
+          )
         ]),
       ],
       columnWidths: const {

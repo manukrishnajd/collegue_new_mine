@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/EventCard.dart';
@@ -6,11 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TEventPhoto extends StatelessWidget {
-  const TEventPhoto({super.key});
+ final String eventId;
 
+  const TEventPhoto({Key? key, required this.eventId}) : super(key: key);
   @override
+
   Widget build(BuildContext context) {
     return DefaultTabController(
+      
       length: 2,
       child: Scaffold(
           appBar: AppBar(
@@ -56,8 +60,8 @@ class TEventPhoto extends StatelessWidget {
                   dividerColor: Colors.transparent,
                 ),
               ),
-              const Expanded(
-                  child: TabBarView(children: [PrevDetails(), PhotoList()])),
+               Expanded(
+                  child: TabBarView(children: [PrevDetails(eventId: eventId,), PhotoList()])),
             ],
           )),
     );
@@ -66,46 +70,119 @@ class TEventPhoto extends StatelessWidget {
 
 //Details tab Screen..............................
 class PrevDetails extends StatelessWidget {
-  const PrevDetails({super.key});
+  final String eventId;
+
+  PrevDetails({Key? key, required this.eventId}) : super(key: key);
+
+  Future<Map<String, dynamic>> getEventDetails() async {
+    DocumentSnapshot<Map<String, dynamic>> eventSnapshot =
+        await FirebaseFirestore.instance.collection('events').doc(eventId).get();
+
+    return eventSnapshot.data() ?? {};
+  }
+
+ Future<List<Map<String, dynamic>>> getParticipants() async {
+  QuerySnapshot<Map<String, dynamic>> participantsSnapshot =
+      await FirebaseFirestore.instance
+          .collection('EventRegistration')
+          .where('eventId', isEqualTo: eventId)
+          .get();
+
+  List<String> studentIds = participantsSnapshot.docs
+      .map((participantDoc) => participantDoc['studentId'].toString())
+      .toList();
+
+  List<Future<DocumentSnapshot<Map<String, dynamic>>>> studentFutures =
+      studentIds.map((studentId) =>
+          FirebaseFirestore.instance.collection('students').doc(studentId).get()).toList();
+
+  List<DocumentSnapshot<Map<String, dynamic>>> studentSnapshots =
+      await Future.wait(studentFutures);
+
+  List<Map<String, dynamic>> participantsData =
+      studentSnapshots.map((snapshot) => snapshot.data() ?? {}).toList();
+
+  return participantsData;
+}
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(25).r,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const EventCard(
-            heading: "heading",
-            date: "date",
-            time: "time",
-            location: "location",
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.h),
-            child: const AppText(
-                text: 'participants',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            FutureBuilder<Map<String, dynamic>>(
+              future: getEventDetails(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  final eventDetails = snapshot.data!;
+
+                  return EventCard(
+                    heading: eventDetails['eventName'] ?? 'Heading Missing',
+                    date: eventDetails['date'] ?? 'Date Missing',
+                    time: eventDetails['time'] ?? 'Time Missing',
+                    location: eventDetails['location'] ?? 'Location Missing',
+                  );
+                } else {
+                  return Text('Event details not available.');
+                }
+              },
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 20.h),
+              child: const AppText(
+                text: 'Participants',
                 size: 15,
                 fontWeight: FontWeight.w500,
-                color: customBlack),
-          ),
-          Expanded(
-            child: ListView.builder(
-              //participend list.............................
-              itemBuilder: (context, index) => StudentTile(
-                img: "assets/teac.png",
-                name: "Name",
-                department: "department",
-                mode: true, // if mode true cancel button will be show.....
-                click: () {},
+                color: customBlack,
               ),
-              itemCount: 3,
             ),
-          )
-        ]),
+            Expanded(
+  child: Center(
+    child: FutureBuilder<List<Map<String, dynamic>>>(
+      future: getParticipants(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          final participants = snapshot.data!;
+          print(participants);
+
+          return 
+          ListView.builder(
+            itemBuilder: (context, index) => StudentTile(
+              img: participants[index]['profilePic'] ?? "assets/teac.png",
+              name: participants[index]['name'] ?? "Name",
+              department: participants[index]['department'] ?? "Department",
+              mode: true, // if mode true cancel button will be shown.....
+              click: () {},
+            ),
+            itemCount: participants.length,
+          );
+        } else {
+          return Text('No participants available.');
+        }
+      },
+    ),
+  ),
+),
+
+          ],
+        ),
       ),
     );
   }
 }
+
 
 // photo list screen...............................
 class PhotoList extends StatelessWidget {

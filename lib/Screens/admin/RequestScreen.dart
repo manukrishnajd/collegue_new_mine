@@ -1,20 +1,62 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:college_app/Screens/admin/StudentDetails.dart';
+import 'package:college_app/Screens/admin/TeachersDetails.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/EventRequestTile.dart';
 import 'package:college_app/widgets/TeacherTile.dart';
-import 'package:college_app/Screens/admin/StudentDetails.dart';
-import 'package:college_app/Screens/admin/TeachersDetails.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class RequestScreen extends StatefulWidget {
-  const RequestScreen({Key? key}) : super(key: key);
+class RequestScreen extends StatelessWidget {
+  const RequestScreen({super.key});
 
   @override
-  _RequestScreenState createState() => _RequestScreenState();
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        body: Column(children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 180).r,
+            child: TabBar(
+              tabs: [
+                Text(
+                  "Teacher",
+                  style:
+                      TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
+                ),
+                Text(
+                  "Event",
+                  style:
+                      TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
+                )
+              ],
+              labelColor: maincolor,
+              indicatorColor: maincolor,
+              unselectedLabelColor: customBlack,
+              dividerColor: Colors.transparent,
+            ),
+          ),
+          SizedBox(
+            height: 20.h,
+          ),
+          const Expanded(
+              child: TabBarView(children: [TeacherList(), EventList()]))
+        ]),
+      ),
+    );
+  }
 }
 
-class _RequestScreenState extends State<RequestScreen> {
+//Teacher List.................
+class TeacherList extends StatefulWidget {
+  const TeacherList({Key? key});
+
+  @override
+  _TeacherListState createState() => _TeacherListState();
+}
+
+class _TeacherListState extends State<TeacherList> {
   late Future<List<Map<String, dynamic>>> teacherDataFuture;
 
   @override
@@ -48,13 +90,13 @@ class _RequestScreenState extends State<RequestScreen> {
 
       teachersQuery.docs.forEach((doc) {
         Map<String, dynamic> teacher = doc.data();
-        teacher['id'] = doc.id; // Include the document ID in the student data
+        teacher['id'] = doc.id; // Include the document ID in the teacher data
         teacherData.add(teacher);
       });
 
       return teacherData;
     } catch (e) {
-      print("Error fetching students: $e");
+      print("Error fetching teachers: $e");
       return [];
     }
   }
@@ -62,14 +104,14 @@ class _RequestScreenState extends State<RequestScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>>(
-      future: fetchTeacherdata(),
+      future: teacherDataFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No data available'));
+          return Center(child: Text('No teachers available'));
         } else {
           // Display data fetched from Firestore
           return ListView.builder(
@@ -83,12 +125,9 @@ class _RequestScreenState extends State<RequestScreen> {
                 status: teacher['status'] ?? "status",
                 cancel: () {
                   updateTeacherStatus(teacher['id'], 'rejected');
-                  fetchTeacherdata();
-
                 },
                 accept: () {
                   updateTeacherStatus(teacher['id'], 'accepted');
-                  fetchTeacherdata();
                 },
               );
             },
@@ -98,115 +137,152 @@ class _RequestScreenState extends State<RequestScreen> {
     );
   }
 }
-
+//Event List.................
 class EventList extends StatelessWidget {
-  const EventList({Key? key});
+  const EventList({super.key});
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        body: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 60.w),
-              child: Container(
-                height: 37.h,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6).r,
-                  color: Colors.blue.shade50,
-                ),
-                child: TabBar(
-                  indicator: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6).r,
-                    color: maincolor,
-                  ),
-                  tabs: [
-                    Text(
-                      "Students",
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      "Teacher",
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                  labelColor: customWhite,
-                  unselectedLabelColor: customBlack,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  indicatorColor: Colors.transparent,
-                ),
+        body: Column(children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 60.w),
+            child: Container(
+              height: 37.h,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6).r,
+                color: Colors.blue.shade50,
               ),
-            ),
-            SizedBox(height: 20.h),
-            const Expanded(
-              child: TabBarView(
-                children: [
-                  StudentRequestList(),
-                  TeacherRequestList(),
+              child: TabBar(
+                indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6).r, color: maincolor),
+                tabs: [
+                  Text("Students",
+                      style: TextStyle(
+                          fontSize: 14.sp, fontWeight: FontWeight.w500)),
+                  Text("Teacher",
+                      style: TextStyle(
+                          fontSize: 14.sp, fontWeight: FontWeight.w500))
                 ],
+                labelColor: customWhite,
+                unselectedLabelColor: customBlack,
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorColor: Colors.transparent,
               ),
             ),
-          ],
-        ),
+          ),
+          SizedBox(
+            height: 20.h,
+          ),
+          const Expanded(
+              child: TabBarView(
+                  children: [StudentRequestList(), TeacherRequestList()]))
+        ]),
       ),
     );
   }
 }
 
+//Student Event Request List................
 class StudentRequestList extends StatelessWidget {
   const StudentRequestList({Key? key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemBuilder: (context, index) => EventRequestTile(
-          image: "assets/teac.png",
-          requestText: "Adhil requests Food Festival",
-          click: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const StudentDetails(),
-              ),
+      body: FutureBuilder<QuerySnapshot>(
+        future: fetchEventRequestsWithStudentId(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No requests available'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                final request = snapshot.data!.docs[index];
+                return EventRequestTile(
+                  image: "assets/teac.png",
+                  requestText: request['eventName'],
+                  click: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => StudentDetails(
+                          requestId: request.id
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
             );
-          },
-        ),
-        itemCount: 2,
+          }
+        },
       ),
     );
   }
+  Future<QuerySnapshot> fetchEventRequestsWithStudentId() async {
+    return FirebaseFirestore.instance
+        .collection('EventRequests')
+        .where('student', isEqualTo: "true")
+        .get();
+  
+}
 }
 
+//Student Event Request List................
 class TeacherRequestList extends StatelessWidget {
-  const TeacherRequestList({Key? key});
+  const TeacherRequestList({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemBuilder: (context, index) => EventRequestTile(
-          image: "assets/teac.png",
-          requestText: "Anandu requests Food Festival",
-          click: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const TeacherDetails(),
-              ),
+      body: FutureBuilder<QuerySnapshot>(
+        future: fetchEventRequestsWithStudentId(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No requests available'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                final request = snapshot.data!.docs[index];
+                return EventRequestTile(
+                  image: "assets/teac.png",
+                  requestText: request['eventName'],
+                  click: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => StudentDetails(
+                          requestId: request.id
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
             );
-          },
-        ),
-        itemCount: 3,
+          }
+        },
       ),
     );
   }
+  Future<QuerySnapshot> fetchEventRequestsWithStudentId() async {
+    return FirebaseFirestore.instance
+        .collection('EventRequests')
+        .where('student', isEqualTo: "false")
+        .get();
+  
+}
 }

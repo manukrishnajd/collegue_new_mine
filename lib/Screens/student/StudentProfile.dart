@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentProfile extends StatefulWidget {
   StudentProfile({super.key});
@@ -12,13 +14,35 @@ class StudentProfile extends StatefulWidget {
 }
 
 class _StudentProfileState extends State<StudentProfile> {
+    late SharedPreferences _prefs;
+  late String _studentId;
+
   final name = TextEditingController();
   final departmnet = TextEditingController();
   final registerno = TextEditingController();
   final phone = TextEditingController();
   final email = TextEditingController();
   final formkey = GlobalKey<FormState>();
+@override
+  void initState() {
+    super.initState();
+    _fetchStudentId();
+  }
 
+  // Function to fetch studentId from SharedPreferences
+  Future<void> _fetchStudentId() async {
+    _prefs = await SharedPreferences.getInstance();
+    _studentId = _prefs.getString('studentId') ?? '';
+    setState(() {});
+  }
+
+  // Function to fetch student data from Firestore using the retrieved studentId
+  Future<DocumentSnapshot<Map<String, dynamic>>> _fetchStudentData() async {
+    return FirebaseFirestore.instance
+        .collection('students')
+        .doc(_studentId)
+        .get();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

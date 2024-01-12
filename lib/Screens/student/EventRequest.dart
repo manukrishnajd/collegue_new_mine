@@ -1,18 +1,43 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:college_app/constants/colors.dart';
 import 'package:college_app/widgets/AppText.dart';
 import 'package:college_app/widgets/CustomButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EventRequest extends StatelessWidget {
   EventRequest({super.key});
 
   final eventname = TextEditingController();
-  final name = TextEditingController();
-  final department = TextEditingController();
-  final phone = TextEditingController();
+  final date = TextEditingController();
+  final time = TextEditingController();
+  final place = TextEditingController();
   final description = TextEditingController();
 
+ Future<void> addEventDataToFirestore(BuildContext context) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+    String studentId = prefs.getString('studentId') ?? '';
+
+      await FirebaseFirestore.instance.collection('EventRequests').add({
+        'eventName': eventname.text,
+        'date': date.text,
+        'time': time.text,
+        'location': place.text,
+        'description': description.text,
+        'StudentId':studentId,
+        'status': 'pending',
+        'student':true // Set the default status as 'accepted'
+      });
+      // Data added successfully
+      Navigator.pop(context); // Go back to previous screen after adding data
+    } catch (e) {
+      // Error occurred while adding data
+      print('Error adding event data: $e');
+      // Show an error message to the user if required
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +55,7 @@ class EventRequest extends StatelessWidget {
           ),
         ),
         title: AppText(
-            text: "Event Request",
+            text: "Add Event",
             size: 18.sp,
             fontWeight: FontWeight.w500,
             color: customBlack),
@@ -46,7 +71,7 @@ class EventRequest extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const AppText(
-                        text: "Request Event",
+                        text: "Event Name",
                         size: 14,
                         fontWeight: FontWeight.w400,
                         color: customBlack),
@@ -56,7 +81,7 @@ class EventRequest extends StatelessWidget {
                         controller: eventname, // controller........
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
-                                vertical: 10.h, horizontal: 15.w),
+                                vertical: 15.h, horizontal: 15.w),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6).r),
                             focusedBorder: OutlineInputBorder(
@@ -66,17 +91,17 @@ class EventRequest extends StatelessWidget {
                       ),
                     ),
                     const AppText(
-                        text: "Name",
+                        text: "Date",
                         size: 14,
                         fontWeight: FontWeight.w400,
                         color: customBlack),
                     Padding(
                       padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                       child: TextFormField(
-                        controller: name, // controller........
+                        controller: date, // controller........
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
-                                vertical: 10.h, horizontal: 15.w),
+                                vertical: 15.h, horizontal: 15.w),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6).r),
                             focusedBorder: OutlineInputBorder(
@@ -86,17 +111,17 @@ class EventRequest extends StatelessWidget {
                       ),
                     ),
                     const AppText(
-                        text: "Department",
+                        text: "Time",
                         size: 14,
                         fontWeight: FontWeight.w400,
                         color: customBlack),
                     Padding(
                       padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                       child: TextFormField(
-                        controller: department, // controller........
+                        controller: time, // controller........
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
-                                vertical: 10.h, horizontal: 15.w),
+                                vertical: 15.h, horizontal: 15.w),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6).r),
                             focusedBorder: OutlineInputBorder(
@@ -106,17 +131,17 @@ class EventRequest extends StatelessWidget {
                       ),
                     ),
                     const AppText(
-                        text: "Phone No",
+                        text: "Location",
                         size: 14,
                         fontWeight: FontWeight.w400,
                         color: customBlack),
                     Padding(
                       padding: const EdgeInsets.only(top: 5, bottom: 15).r,
                       child: TextFormField(
-                        controller: phone, // controller........
+                        controller: place, // controller........
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
-                                vertical: 10.h, horizontal: 15.w),
+                                vertical: 15.h, horizontal: 15.w),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6).r),
                             focusedBorder: OutlineInputBorder(
@@ -136,8 +161,6 @@ class EventRequest extends StatelessWidget {
                         controller: description, // controller........
                         maxLines: 4,
                         decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 10.h, horizontal: 15.w),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(6).r),
                             focusedBorder: OutlineInputBorder(
@@ -149,9 +172,9 @@ class EventRequest extends StatelessWidget {
                   ],
                 ),
                 SizedBox(
-                  height: 80.h,
+                  height: 40.h,
                 ),
-                CustomButton(btnname: "Submit", click: () {})
+                CustomButton(btnname: "Submit", click: () {addEventDataToFirestore(context);})
               ]),
         ),
       ),

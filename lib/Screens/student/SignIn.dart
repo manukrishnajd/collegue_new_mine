@@ -86,13 +86,7 @@ class _SignInState extends State<SignIn> {
                     CustomButton(
                         btnname: "Login",
                         click: () {
-                          formKey.currentState!.validate();
-                          // Login.............................................
-                          // Navigator.pushReplacement(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       builder: (context) => const StudentHome(),
-                          //     ));
+                        validateLogin();
                         }),
                     SizedBox(
                       height: 20.h,
@@ -147,7 +141,7 @@ class _SignInState extends State<SignIn> {
 
         // Store Document ID in shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('teacherId', docId);
+        await prefs.setString('studentId', docId);
 
         Navigator.pushReplacement(
           context,
