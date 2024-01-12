@@ -11,7 +11,7 @@ class EventCard extends StatelessWidget {
     required this.time,
     required this.location,
     this.mode = false,
-    this.host = "",
+    this.host = "", required eventId,
   });
   final String heading;
   final String date;

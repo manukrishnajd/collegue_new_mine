@@ -135,6 +135,8 @@ class StudentList extends StatelessWidget {
                 return StudentTile(
                   img: studentData['img'] ?? "assets/user.png",
                   name: studentData['name'] ?? "Name not available",
+                  eventId: '',
+                  studentId: '',
                   department:
                       studentData['department'] ?? "Department not available",
                   click: () {

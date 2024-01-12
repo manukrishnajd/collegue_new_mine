@@ -79,6 +79,8 @@ class EventRegistration extends StatelessWidget {
             date: eventData['date'] ?? 'Event Date',
             time: eventData['time'] ?? 'Event Time',
             location: eventData['location'] ?? 'Event Location',
+            eventId: '',
+            
           ),
           const SizedBox(height: 40),
           const AppText(
@@ -106,9 +108,11 @@ class EventRegistration extends StatelessWidget {
               img: studentData['profileImage'] ?? '',
               name: studentData['name'] ?? "Name",
               department: studentData['department'] ?? "Department",
+              studentId: '',
               click: () {
                 // Add click functionality if needed
               },
+              eventId: '',
             );
           },
         );

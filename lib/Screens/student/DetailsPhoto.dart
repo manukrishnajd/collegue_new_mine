@@ -81,7 +81,8 @@ class PrevDetails extends StatelessWidget {
             time: "time",
             location: "location",
             host: "ameen",
-            mode:true, //if mode is true host is visible in the event card............
+            mode:true,
+            eventId: '', //if mode is true host is visible in the event card............
           ),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.h),
@@ -98,7 +99,9 @@ class PrevDetails extends StatelessWidget {
                   img: "assets/teac.png",
                   name: "Name",
                   department: "department",
-                   click: () {},),
+                  studentId: '',
+                   click: () {},
+                   eventId: '',),
               itemCount: 3,
             ),
           )

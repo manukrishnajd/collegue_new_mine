@@ -38,7 +38,9 @@ class TEventDetails extends StatelessWidget {
               heading: "food festival",
               date: "12-12-2023",
               time: "10.00 Am",
-              location: 'College Hall'),
+              location: 'College Hall',
+              eventId: '',),
+              
           Padding(
             padding: const EdgeInsets.only(top: 40, bottom: 20).r,
             child: const AppText(
@@ -53,8 +55,10 @@ class TEventDetails extends StatelessWidget {
               img: "assets/teac.png",
               name: "Name",
               department: "department",
+              studentId: '',
               mode: true, // if mode true cancel button will be show.....
               click: () {},
+              eventId: '',
             ),
             itemCount: 2,
           )),

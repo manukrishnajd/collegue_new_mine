@@ -79,6 +79,8 @@ class RequestEvent extends StatelessWidget {
               name: "Host",
               department: "department",
               click: () {},
+              studentId: '',
+              eventId: '',
             ),
             SizedBox(
               height: 20.h,

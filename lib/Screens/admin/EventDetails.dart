@@ -204,6 +204,8 @@ class _EventDetailsState extends State<EventDetails> {
                 name: teacherName,
                 department: teacherDepartment,
                 click: () {},
+                eventId: '',
+                studentId: '',
               ),
               SizedBox(height: 20.h),
               const AppText(

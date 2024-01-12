@@ -159,6 +159,7 @@ class EventPreviousList extends StatelessWidget {
               date: event['date'] ?? 'Date',
               time: event['time'] ?? 'Time',
               location: event['location'] ?? 'Location',
+              eventId: '',
             );
           },
           itemCount: events.length,

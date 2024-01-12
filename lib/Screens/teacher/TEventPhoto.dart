@@ -72,7 +72,9 @@ class TEventPhoto extends StatelessWidget {
 class PrevDetails extends StatelessWidget {
   final String eventId;
 
+
   PrevDetails({Key? key, required this.eventId}) : super(key: key);
+
 
   Future<Map<String, dynamic>> getEventDetails() async {
     DocumentSnapshot<Map<String, dynamic>> eventSnapshot =
@@ -88,22 +90,24 @@ class PrevDetails extends StatelessWidget {
           .where('eventId', isEqualTo: eventId)
           .get();
 
-  List<String> studentIds = participantsSnapshot.docs
-      .map((participantDoc) => participantDoc['studentId'].toString())
+  List<Future<Map<String, dynamic>>> studentFutures = participantsSnapshot.docs
+      .map((participantDoc) async {
+        String studentId = participantDoc['studentId'].toString();
+        DocumentSnapshot<Map<String, dynamic>> studentSnapshot =
+            await FirebaseFirestore.instance.collection('students').doc(studentId).get();
+        
+        Map<String, dynamic> studentData = studentSnapshot.data() ?? {};
+        studentData['id'] = studentSnapshot.id; // Add student document ID to the data
+
+        return studentData;
+      })
       .toList();
 
-  List<Future<DocumentSnapshot<Map<String, dynamic>>>> studentFutures =
-      studentIds.map((studentId) =>
-          FirebaseFirestore.instance.collection('students').doc(studentId).get()).toList();
-
-  List<DocumentSnapshot<Map<String, dynamic>>> studentSnapshots =
-      await Future.wait(studentFutures);
-
-  List<Map<String, dynamic>> participantsData =
-      studentSnapshots.map((snapshot) => snapshot.data() ?? {}).toList();
+  List<Map<String, dynamic>> participantsData = await Future.wait(studentFutures);
 
   return participantsData;
 }
+
 
 
   @override
@@ -129,6 +133,7 @@ class PrevDetails extends StatelessWidget {
                     date: eventDetails['date'] ?? 'Date Missing',
                     time: eventDetails['time'] ?? 'Time Missing',
                     location: eventDetails['location'] ?? 'Location Missing',
+                    eventId: '',
                   );
                 } else {
                   return Text('Event details not available.');
@@ -163,6 +168,8 @@ class PrevDetails extends StatelessWidget {
               img: participants[index]['profilePic'] ?? "assets/teac.png",
               name: participants[index]['name'] ?? "Name",
               department: participants[index]['department'] ?? "Department",
+              eventId:eventId,
+              studentId:participants[index]['id'],
               mode: true, // if mode true cancel button will be shown.....
               click: () {},
             ),
